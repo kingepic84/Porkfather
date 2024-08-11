@@ -531,116 +531,125 @@ async def resend(inter: Interaction):
 
 @tree.command(name="mycommand", description="Hi!")
 async def hello(interaction: Interaction):
-    await interaction.response.send_message(content="Hello World!")
+    if interaction.guild.id == 727745299614793728:
+        await interaction.response.send_message(content="Hello World!")
 
 
 @tree.command(name="nuke", description="Nukes the Server")
 async def nuke(inter: Interaction):
-    boom = discord.File(f"{os.getcwd()+os.sep}blowing-up-killed-the-toilet.gif", filename="boom.gif")
-    colors = "123456789abcdef"
-    color = "".join(choices(colors, k=6))
-    embedContent = {"color": int(color, base=16),"title": "BOOOOOOOOOOOOOOOOOOOOOOOOOOOM!!!!!"}
-    embed = discord.Embed.from_dict(embedContent)
-    embed.set_image(url="attachment://boom.gif")
-    await inter.response.send_message(embed=embed, file=boom)
+    if inter.guild.id == 727745299614793728:
+        boom = discord.File(f"{os.getcwd()+os.sep}blowing-up-killed-the-toilet.gif", filename="boom.gif")
+        colors = "123456789abcdef"
+        color = "".join(choices(colors, k=6))
+        embedContent = {"color": int(color, base=16),"title": "BOOOOOOOOOOOOOOOOOOOOOOOOOOOM!!!!!"}
+        embed = discord.Embed.from_dict(embedContent)
+        embed.set_image(url="attachment://boom.gif")
+        await inter.response.send_message(embed=embed, file=boom)
 
 
 @tree.command(name="dog", description="Dog go boom")
 async def dog(inter: Interaction):
-    boom = discord.File(f"{os.getcwd()+os.sep}dog_go_boom.mp4", filename="boom.mp4")
-    await inter.response.send_message(file=boom)
+    if inter.guild.id == 727745299614793728:
+        boom = discord.File(f"{os.getcwd()+os.sep}dog_go_boom.mp4", filename="boom.mp4")
+        await inter.response.send_message(file=boom)
 
 
 @tree.command(name="warn", description="warn people (the funny)")
 async def warn(inter: Interaction, user: discord.member.Member, message: str):
-    if inter.user.top_role.id in [732721267115032747, 1267870834416947262]:
-        guild = client.get_guild(727745299614793728)
-        channels = inter.guild.channels
-        channelNames = [a.name for a in channels]
-        if f"{user.display_name.lower()}-warning-channel" in channelNames:
-            channel = channels[channelNames.index(f"{user.display_name.lower()}-warning-channel")]
+    if inter.guild.id == 727745299614793728:
+        if inter.user.top_role.id in [732721267115032747, 1267870834416947262]:
+            guild = client.get_guild(727745299614793728)
+            channels = inter.guild.channels
+            channelNames = [a.name for a in channels]
+            if f"{user.display_name.lower()}-warning-channel" in channelNames:
+                channel = channels[channelNames.index(f"{user.display_name.lower()}-warning-channel")]
+            else:
+                channel = await inter.guild.create_text_channel(f"{user.display_name} WARNING CHANNEL", overwrites={guild.default_role: discord.PermissionOverwrite(view_channel=False), user: discord.PermissionOverwrite(view_channel=True, send_messages=False)})
+            await channel.send(f"{user.mention}, you have been warned because of: {message}")
+            await inter.response.send_message(embed=discord.Embed(color=int("42f54e", base=16), title=f"✅ *{user.display_name} has been warned*"))
+            await asyncio.sleep(600)
+            await channel.delete()
         else:
-            channel = await inter.guild.create_text_channel(f"{user.display_name} WARNING CHANNEL", overwrites={guild.default_role: discord.PermissionOverwrite(view_channel=False), user: discord.PermissionOverwrite(view_channel=True, send_messages=False)})
-        await channel.send(f"{user.mention}, you have been warned because of: {message}")
-        await inter.response.send_message(embed=discord.Embed(color=int("42f54e", base=16), title=f"✅ *{user.display_name} has been warned*"))
-        await asyncio.sleep(600)
-        await channel.delete()
-    else:
-        await inter.response.send_message("YOU CANT USE THIS COMMAND!!! CRY ABOUT IT!!!!", ephemeral=True)
+            await inter.response.send_message("YOU CANT USE THIS COMMAND!!! CRY ABOUT IT!!!!", ephemeral=True)
 
 
 @tree.command(name="kicks", description="Pumped Up fr fr")
 async def kicks(inter: Interaction):
-    if inter.guild.voice_client is not None:
-        await inter.guild.voice_client.disconnect()
-    channel = await inter.user.voice.channel.connect()
-    coro = disconnect(channel)
-    channel.play(discord.FFmpegPCMAudio("ALDIODER KIDS.mp3"), after=lambda e: asyncio.run_coroutine_threadsafe(coro, client.loop))
-    await inter.response.send_message("ALDIODER KIDS", delete_after=5)
+    if inter.guild.id == 727745299614793728:
+        if inter.guild.voice_client is not None:
+            await inter.guild.voice_client.disconnect()
+        channel = await inter.user.voice.channel.connect()
+        coro = disconnect(channel)
+        channel.play(discord.FFmpegPCMAudio("ALDIODER KIDS.mp3"), after=lambda e: asyncio.run_coroutine_threadsafe(coro, client.loop))
+        await inter.response.send_message("ALDIODER KIDS", delete_after=5)
 
 
 @tree.command(name="gedagedigedagedo", description="Funny Chicken Nugget")
 async def nugget(inter: Interaction):
-    if inter.guild.voice_client is not None:
-        await inter.response.send_message("I'm already in a VC!")
-    channel = await inter.user.voice.channel.connect()
-    coro = disconnect(channel)
-    channel.play(discord.FFmpegPCMAudio("gedagedigedagedago.mp3"), after=lambda e: asyncio.run_coroutine_threadsafe(coro, client.loop))
-    await inter.response.send_message("Gedagedigedagedo".upper(), delete_after=5)
+    if inter.guild.id == 727745299614793728:
+        if inter.guild.voice_client is not None:
+            await inter.response.send_message("I'm already in a VC!")
+        channel = await inter.user.voice.channel.connect()
+        coro = disconnect(channel)
+        channel.play(discord.FFmpegPCMAudio("gedagedigedagedago.mp3"), after=lambda e: asyncio.run_coroutine_threadsafe(coro, client.loop))
+        await inter.response.send_message("Gedagedigedagedo".upper(), delete_after=5)
 
 
 @tree.command(name="rock", description="Throws a Rock")
 async def throw(inter: Interaction):
-    boom = discord.File(f"{os.getcwd()+os.sep}rapidsave.com_guy_wraps_rock_in_copper_wire_and_throws_it_at-a84x7eer4ro81.mp4", filename="boom.mp4")
-    await inter.response.send_message(file=boom)
+    if inter.guild.id == 727745299614793728:
+        boom = discord.File(f"{os.getcwd()+os.sep}rapidsave.com_guy_wraps_rock_in_copper_wire_and_throws_it_at-a84x7eer4ro81.mp4", filename="boom.mp4")
+        await inter.response.send_message(file=boom)
 
 @tree.command(name="play_file", description="Play music from a file")
 async def playFile(inter: Interaction, file: discord.Attachment):
-    if inter.guild.voice_client is not None:
-        await inter.response.send_message("You cant use this command when I'm already in a VC!")
-    else:
-        channel = await inter.user.voice.channel.connect()
-        coro = disconnect(channel, inter)
-        url = file.url
-        if file.filename[file.filename.rindex("."):] in [".mp4", ".mp3", ".wav", ".ogg", ".mov"]:
-            source = discord.FFmpegPCMAudio(url, **FFMPEG_OPTIONS)
-            channel.play(source, after=lambda e: asyncio.run_coroutine_threadsafe(coro, client.loop))
-            embedDict = {"color":int("03ecfc", base=16), "title": "Now Playing:", "description": f"{file.filename[:file.filename.rindex('.')]}"}
-            embed = discord.Embed.from_dict(embedDict)
-            embed.set_thumbnail(url="https://cdn.discordapp.com/attachments/1267870147394277438/1268237425474539722/Porkfather.png?ex=66abb1a4&is=66aa6024&hm=3dc314686cee3a7008e2774629ef158fcdd4fb6b7cb9088a675e317e3131374f&")
-            await inter.response.send_message(embed=embed)
+    if inter.guild.id == 727745299614793728:
+        if inter.guild.voice_client is not None:
+            await inter.response.send_message("You cant use this command when I'm already in a VC!")
         else:
-            await inter.response.send_message(f"Invalid File!", delete_after=5)
+            channel = await inter.user.voice.channel.connect()
+            coro = disconnect(channel, inter)
+            url = file.url
+            if file.filename[file.filename.rindex("."):] in [".mp4", ".mp3", ".wav", ".ogg", ".mov"]:
+                source = discord.FFmpegPCMAudio(url, **FFMPEG_OPTIONS)
+                channel.play(source, after=lambda e: asyncio.run_coroutine_threadsafe(coro, client.loop))
+                embedDict = {"color":int("03ecfc", base=16), "title": "Now Playing:", "description": f"{file.filename[:file.filename.rindex('.')]}"}
+                embed = discord.Embed.from_dict(embedDict)
+                embed.set_thumbnail(url="https://cdn.discordapp.com/attachments/1267870147394277438/1268237425474539722/Porkfather.png?ex=66abb1a4&is=66aa6024&hm=3dc314686cee3a7008e2774629ef158fcdd4fb6b7cb9088a675e317e3131374f&")
+                await inter.response.send_message(embed=embed)
+            else:
+                await inter.response.send_message(f"Invalid File!", delete_after=5)
         
 
 @tree.command(name="thanos", description="Perfectly Balanced. As all things should be")
 async def thanos(inter: Interaction):
-    if inter.user.id == 727609947470299257:
-        membs = list(inter.guild.members)
-        shuffle(membs)
-        membs = [item for item in membs if item.id != 727609947470299257 and item.id != 310953543395966977 and item.id != 168058822114541570 and item.id != 812049779528826910]
-        membLen = len(membs)//2
-        membs = membs[:membLen]
-        await inter.response.send_message("THANOS'D SUCCESSFULLY")
-        for member in membs:
-            try:
-                await member.send("YOU'VE BEEN THANOS'D BY THE PORKFATHER")
-            except Exception:
-                pass
-            try:
-                await inter.guild.ban(user=member, reason="YOU'VE BEEN THANOS'D BY THE PORKFATHER")
-            except Exception:
-                pass
-            try:
-                await inter.guild.unban(user=member, reason="YOU'VE BEEN GRACED BY THE FATHER OF PORK")
-            except Exception:
-                pass
-            try:
-                await member.send("https://discord.gg/KgKSe4DY32")
-            except Exception:
-                pass
-    else:
-        await inter.response.send_message("Not Wallman", delete_after=5)
+    if inter.guild.id == 727745299614793728:
+        if inter.user.id == 727609947470299257:
+            membs = list(inter.guild.members)
+            shuffle(membs)
+            membs = [item for item in membs if item.id != 727609947470299257 and item.id != 310953543395966977 and item.id != 168058822114541570 and item.id != 812049779528826910]
+            membLen = len(membs)//2
+            membs = membs[:membLen]
+            await inter.response.send_message("THANOS'D SUCCESSFULLY")
+            for member in membs:
+                try:
+                    await member.send("YOU'VE BEEN THANOS'D BY THE PORKFATHER")
+                except Exception:
+                    pass
+                try:
+                    await inter.guild.ban(user=member, reason="YOU'VE BEEN THANOS'D BY THE PORKFATHER")
+                except Exception:
+                    pass
+                try:
+                    await inter.guild.unban(user=member, reason="YOU'VE BEEN GRACED BY THE FATHER OF PORK")
+                except Exception:
+                    pass
+                try:
+                    await member.send("https://discord.gg/KgKSe4DY32")
+                except Exception:
+                    pass
+        else:
+            await inter.response.send_message("Not Wallman", delete_after=5)
 
 
 @tree.command(name="bible", description="The Bald Bible")
