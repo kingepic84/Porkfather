@@ -7,6 +7,7 @@ import discord
 import re
 import audioop
 import json
+import multiprocessing
 import yt_dlp
 from random import choices, shuffle
 from discord import app_commands, Interaction
@@ -23,6 +24,7 @@ loopOne = False
 pattern = re.compile(r'^https:\/\/[^\s\/$.?#].[^\s]*$')
 vc = None
 currEmbed = None
+
 
 
 class setList(list):
@@ -391,7 +393,6 @@ class Player(View):
             bullet_list[0] = f"**Currently Looping:** {bullet_list[0][bullet_list[0].index('.**')+3:]}"
         elif len(title_queue) > 0 and title_queue[0][2]:
             queue_name = "***Currently Looping Entire Queue:***"
-        bullet_list.insert(0, f"Total Queue Time: {str(int(self.totalHours))+':' if int(self.totalHours) > 0 else ''}{str(int(self.totalMinutes))+':' if int(self.totalMinutes) > 0 else '0:'}{'0'+str(int(self.totalSeconds)) if int(self.totalSeconds) < 10 else str(int(self.totalSeconds))}")
         bullet_list = "\n".join(bullet_list) if len(bullet_list) > 0 else "Song Queue is Empty!"
         embedDict = {"color": int("4287f5", base=16), "title": queue_name, "description":bullet_list}
         embed = discord.Embed.from_dict(embedDict)
