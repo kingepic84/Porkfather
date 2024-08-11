@@ -478,7 +478,6 @@ async def on_ready():
 
 
 async def player(inter: Interaction):
-    await inter.response.defer(thinking=True)
     if inter.user.voice is not None:
         vMembs = [member.id for member in inter.user.voice.channel.members]
         if 1211521026152865822 not in vMembs:
@@ -500,10 +499,12 @@ async def player(inter: Interaction):
 
 @tree.command(name="mediaplayer", description="Alias for /videoplayer")
 async def mplay(inter: Interaction):
+    await inter.response.defer(thinking=True)
     await player(inter)
     
 @tree.command(name="videoplayer", description="Start the videoplayer")
 async def vplayer(inter: Interaction):
+    await inter.response.defer(thinking=True)
     await player(inter)
 
 @tree.command(name="refresh", description="Resends the videoplayer embed")
