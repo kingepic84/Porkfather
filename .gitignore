@@ -3,3 +3,4 @@ bot1.py
 *.json
 musicbot.py
 wallmanPi.py
+*.txt
