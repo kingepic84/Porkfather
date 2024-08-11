@@ -478,7 +478,7 @@ async def on_ready():
 
 
 async def player(inter: Interaction):
-    await inter.response.defer()
+    await inter.response.defer(thinking=True)
     if inter.user.voice is not None:
         vMembs = [member.id for member in inter.user.voice.channel.members]
         if 1211521026152865822 not in vMembs:
@@ -492,11 +492,11 @@ async def player(inter: Interaction):
             global vidPlayer
             vidPlayer = Player(vc=vc, currEmbed=embed, timeout=3600)
             await inter.channel.purge(limit=10, check=lambda c: len(c.components) > 0 and c.author.id == 1211521026152865822)
-            await inter.response.send_message(embed=embed, view=vidPlayer)
+            await inter.followup.send(embed=embed, view=vidPlayer)
         elif 1211521026152865822 in vMembs:
-            await inter.response.send_message("I'm already in the VC!", delete_after=2)
+            await inter.followup.send("I'm already in the VC!", delete_after=2)
     else:
-        await inter.response.send_message("You're not in a VC!", delete_after=2)
+        await inter.followup.send("You're not in a VC!", delete_after=2)
 
 @tree.command(name="mediaplayer", description="Alias for /videoplayer")
 async def mplay(inter: Interaction):
