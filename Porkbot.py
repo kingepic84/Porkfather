@@ -494,19 +494,17 @@ async def player(inter: Interaction):
             await inter.channel.purge(limit=10, check=lambda c: len(c.components) > 0 and c.author.id == 1211521026152865822)
             await inter.followup.send(embed=embed, view=vidPlayer)
         elif 1211521026152865822 in vMembs:
-            await inter.followup.send("I'm already in the VC!", delete_after=2)
+            await inter.response.send_message("I'm already in the VC!", delete_after=2)
     else:
-        await inter.followup.send("You're not in a VC!", delete_after=2)
+        await inter.response.send_message("You're not in a VC!", delete_after=2)
 
 @tree.command(name="mediaplayer", description="Alias for /videoplayer")
 async def mplay(inter: Interaction):
-    print("here player")
     await inter.response.defer(thinking=True)
     await player(inter)
     
 @tree.command(name="videoplayer", description="Start the videoplayer")
 async def vplayer(inter: Interaction):
-    print("here player")
     await inter.response.defer(thinking=True)
     await player(inter)
 
@@ -584,7 +582,7 @@ async def kicks(inter: Interaction):
 @tree.command(name="gedagedigedagedo", description="Funny Chicken Nugget")
 async def nugget(inter: Interaction):
     if inter.guild.voice_client is not None:
-        await inter.guild.voice_client.disconnect()
+        await inter.response.send_message("I'm already in a VC!")
     channel = await inter.user.voice.channel.connect()
     coro = disconnect(channel)
     channel.play(discord.FFmpegPCMAudio("gedagedigedagedago.mp3"), after=lambda e: asyncio.run_coroutine_threadsafe(coro, client.loop))
