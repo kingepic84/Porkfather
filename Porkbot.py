@@ -478,6 +478,7 @@ async def on_ready():
 
 
 async def player(inter: Interaction):
+    print("here")
     if inter.user.voice is not None:
         vMembs = [member.id for member in inter.user.voice.channel.members]
         if 1211521026152865822 not in vMembs:
