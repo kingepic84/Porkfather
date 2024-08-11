@@ -528,6 +528,7 @@ async def resend(inter: Interaction):
 
 @tree.command(name="mycommand", description="Hi!")
 async def hello(interaction: Interaction):
+    print("Here")
     await interaction.response.defer()
     await interaction.response.send_message(content="Hello World!")
 
