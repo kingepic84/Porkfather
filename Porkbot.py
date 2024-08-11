@@ -652,5 +652,5 @@ async def disconnect(channel:discord.VoiceClient, inter: Interaction = None):
     if inter is not None:
         await inter.delete_original_response()
 with open("auth.txt") as key:
-    key.readline().strip()
-    client.run(key)
+    keyStr = key.readline().strip()
+    client.run(keyStr)
