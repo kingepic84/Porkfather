@@ -528,14 +528,12 @@ async def resend(inter: Interaction):
 
 @tree.command(name="mycommand", description="Hi!")
 async def hello(interaction: Interaction):
-    print("Here")
-    await interaction.response.defer()
     await interaction.response.send_message(content="Hello World!")
 
 
 @tree.command(name="nuke", description="Nukes the Server")
 async def nuke(inter: Interaction):
-    boom = discord.File(f"{os.getcwd()}\\blowing-up-killed-the-toilet.gif", filename="boom.gif")
+    boom = discord.File(f"{os.getcwd()+os.sep}blowing-up-killed-the-toilet.gif", filename="boom.gif")
     colors = "123456789abcdef"
     color = "".join(choices(colors, k=6))
     embedContent = {"color": int(color, base=16),"title": "BOOOOOOOOOOOOOOOOOOOOOOOOOOOM!!!!!"}
@@ -546,7 +544,7 @@ async def nuke(inter: Interaction):
 
 @tree.command(name="dog", description="Dog go boom")
 async def dog(inter: Interaction):
-    boom = discord.File(f"{os.getcwd()}\\dog_go_boom.mp4", filename="boom.mp4")
+    boom = discord.File(f"{os.getcwd()+os.sep}dog_go_boom.mp4", filename="boom.mp4")
     await inter.response.send_message(file=boom)
 
 
@@ -590,7 +588,7 @@ async def nugget(inter: Interaction):
 
 @tree.command(name="rock", description="Throws a Rock")
 async def throw(inter: Interaction):
-    boom = discord.File(f"{os.getcwd()}\\rapidsave.com_guy_wraps_rock_in_copper_wire_and_throws_it_at-a84x7eer4ro81.mp4", filename="boom.mp4")
+    boom = discord.File(f"{os.getcwd()+os.sep}rapidsave.com_guy_wraps_rock_in_copper_wire_and_throws_it_at-a84x7eer4ro81.mp4", filename="boom.mp4")
     await inter.response.send_message(file=boom)
 
 @tree.command(name="play_file", description="Play music from a file")
