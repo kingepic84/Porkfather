@@ -501,11 +501,13 @@ async def player(inter: Interaction):
 @tree.command(name="mediaplayer", description="Alias for /videoplayer")
 async def mplay(inter: Interaction):
     await inter.response.defer(thinking=True)
+    print("here player")
     await player(inter)
     
 @tree.command(name="videoplayer", description="Start the videoplayer")
 async def vplayer(inter: Interaction):
     await inter.response.defer(thinking=True)
+    print("here player")
     await player(inter)
 
 @tree.command(name="refresh", description="Resends the videoplayer embed")
