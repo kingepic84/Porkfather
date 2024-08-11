@@ -533,7 +533,9 @@ async def resend(inter: Interaction):
 async def hello(interaction: Interaction):
     if interaction.guild.id == 727745299614793728:
         await interaction.response.send_message(content="Hello World!")
-
+    else:
+        await interaction.response.send_message(content="# YOU CANT USE THIS COMMAND IN THIS SERVER!\nhttps://tenor.com/view/wheeze-laugh-gif-14359545", delete_after=5)
+        
 
 @tree.command(name="nuke", description="Nukes the Server")
 async def nuke(inter: Interaction):
@@ -545,6 +547,8 @@ async def nuke(inter: Interaction):
         embed = discord.Embed.from_dict(embedContent)
         embed.set_image(url="attachment://boom.gif")
         await inter.response.send_message(embed=embed, file=boom)
+    else:
+        await inter.response.send_message(content="# YOU CANT USE THIS COMMAND IN THIS SERVER!\nhttps://tenor.com/view/wheeze-laugh-gif-14359545", delete_after=5)
 
 
 @tree.command(name="dog", description="Dog go boom")
@@ -552,6 +556,8 @@ async def dog(inter: Interaction):
     if inter.guild.id == 727745299614793728:
         boom = discord.File(f"{os.getcwd()+os.sep}dog_go_boom.mp4", filename="boom.mp4")
         await inter.response.send_message(file=boom)
+    else:
+        await inter.response.send_message(content="# YOU CANT USE THIS COMMAND IN THIS SERVER!\nhttps://tenor.com/view/wheeze-laugh-gif-14359545", delete_after=5)
 
 
 @tree.command(name="warn", description="warn people (the funny)")
@@ -571,6 +577,8 @@ async def warn(inter: Interaction, user: discord.member.Member, message: str):
             await channel.delete()
         else:
             await inter.response.send_message("YOU CANT USE THIS COMMAND!!! CRY ABOUT IT!!!!", ephemeral=True)
+    else:
+        await inter.response.send_message(content="# YOU CANT USE THIS COMMAND IN THIS SERVER!\nhttps://tenor.com/view/wheeze-laugh-gif-14359545", delete_after=5)
 
 
 @tree.command(name="kicks", description="Pumped Up fr fr")
@@ -582,6 +590,8 @@ async def kicks(inter: Interaction):
         coro = disconnect(channel)
         channel.play(discord.FFmpegPCMAudio("ALDIODER KIDS.mp3"), after=lambda e: asyncio.run_coroutine_threadsafe(coro, client.loop))
         await inter.response.send_message("ALDIODER KIDS", delete_after=5)
+    else:
+        await inter.response.send_message(content="# YOU CANT USE THIS COMMAND IN THIS SERVER!\nhttps://tenor.com/view/wheeze-laugh-gif-14359545", delete_after=5)
 
 
 @tree.command(name="gedagedigedagedo", description="Funny Chicken Nugget")
@@ -593,6 +603,8 @@ async def nugget(inter: Interaction):
         coro = disconnect(channel)
         channel.play(discord.FFmpegPCMAudio("gedagedigedagedago.mp3"), after=lambda e: asyncio.run_coroutine_threadsafe(coro, client.loop))
         await inter.response.send_message("Gedagedigedagedo".upper(), delete_after=5)
+    else:
+        await inter.response.send_message(content="# YOU CANT USE THIS COMMAND IN THIS SERVER!\nhttps://tenor.com/view/wheeze-laugh-gif-14359545", delete_after=5)
 
 
 @tree.command(name="rock", description="Throws a Rock")
@@ -600,7 +612,11 @@ async def throw(inter: Interaction):
     if inter.guild.id == 727745299614793728:
         boom = discord.File(f"{os.getcwd()+os.sep}rapidsave.com_guy_wraps_rock_in_copper_wire_and_throws_it_at-a84x7eer4ro81.mp4", filename="boom.mp4")
         await inter.response.send_message(file=boom)
-
+    else:
+        await inter.response.send_message(content="# YOU CANT USE THIS COMMAND IN THIS SERVER!\nhttps://tenor.com/view/wheeze-laugh-gif-14359545", delete_after=5)
+    
+        
+        
 @tree.command(name="play_file", description="Play music from a file")
 async def playFile(inter: Interaction, file: discord.Attachment):
     if inter.guild.id == 727745299614793728:
@@ -619,6 +635,8 @@ async def playFile(inter: Interaction, file: discord.Attachment):
                 await inter.response.send_message(embed=embed)
             else:
                 await inter.response.send_message(f"Invalid File!", delete_after=5)
+    else:
+        await inter.response.send_message(content="# YOU CANT USE THIS COMMAND IN THIS SERVER!\nhttps://tenor.com/view/wheeze-laugh-gif-14359545", delete_after=5)
         
 
 @tree.command(name="thanos", description="Perfectly Balanced. As all things should be")
@@ -650,11 +668,18 @@ async def thanos(inter: Interaction):
                     pass
         else:
             await inter.response.send_message("Not Wallman", delete_after=5)
+    else:
+        await inter.response.send_message(content="# YOU CANT USE THIS COMMAND IN THIS SERVER!\nhttps://tenor.com/view/wheeze-laugh-gif-14359545", delete_after=5)
+    
 
 
 @tree.command(name="bible", description="The Bald Bible")
 async def bible(inter: Interaction):
-    await inter.response.send_message(content="https://tenor.com/view/tf2-bald-engineer-bec-2fort-gif-22082556")
+    if inter.guild.id == 727745299614793728:
+        await inter.response.send_message(content="https://tenor.com/view/tf2-bald-engineer-bec-2fort-gif-22082556")
+    else:
+        await inter.response.send_message(content="# YOU CANT USE THIS COMMAND IN THIS SERVER!\nhttps://tenor.com/view/wheeze-laugh-gif-14359545", delete_after=5)
+    
         
 async def disconnect(channel:discord.VoiceClient, inter: Interaction = None):
     await asyncio.sleep(0.5)
