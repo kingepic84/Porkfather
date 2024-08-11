@@ -492,7 +492,7 @@ async def player(inter: Interaction):
             global vidPlayer
             vidPlayer = Player(vc=vc, currEmbed=embed, timeout=3600)
             await inter.channel.purge(limit=10, check=lambda c: len(c.components) > 0 and c.author.id == 1211521026152865822)
-            await inter.edit_original_response(embed=embed, view=vidPlayer)
+            await inter.edit_original_response(content="",embed=embed, view=vidPlayer)
         elif 1211521026152865822 in vMembs:
             await inter.edit_original_response("I'm already in the VC!", delete_after=2)
     else:
