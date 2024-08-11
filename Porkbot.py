@@ -492,20 +492,20 @@ async def player(inter: Interaction):
             global vidPlayer
             vidPlayer = Player(vc=vc, currEmbed=embed, timeout=3600)
             await inter.channel.purge(limit=10, check=lambda c: len(c.components) > 0 and c.author.id == 1211521026152865822)
-            await inter.followup.send(embed=embed, view=vidPlayer)
+            await inter.edit_original_response(embed=embed, view=vidPlayer)
         elif 1211521026152865822 in vMembs:
-            await inter.response.send_message("I'm already in the VC!", delete_after=2)
+            await inter.edit_original_response("I'm already in the VC!", delete_after=2)
     else:
-        await inter.response.send_message("You're not in a VC!", delete_after=2)
+        await inter.edit_original_response("You're not in a VC!", delete_after=2)
 
 @tree.command(name="mediaplayer", description="Alias for /videoplayer")
 async def mplay(inter: Interaction):
-    await inter.response.defer(thinking=True)
+    await inter.response.send_message("Please wait while we set up the video player...")
     await player(inter)
     
 @tree.command(name="videoplayer", description="Start the videoplayer")
 async def vplayer(inter: Interaction):
-    await inter.response.defer(thinking=True)
+    await inter.response.send_message("Please wait while we set up the video player...")
     await player(inter)
 
 @tree.command(name="refresh", description="Resends the videoplayer embed")
