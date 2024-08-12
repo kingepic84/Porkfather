@@ -11,7 +11,6 @@ import yt_dlp
 from discord import app_commands, Interaction
 from discord.ui import Button, View, TextInput, button, Modal
 from random import choices, shuffle
-from multiprocessing import Process
 
 
 intents = discord.Intents.default()
@@ -193,6 +192,7 @@ class Player(View):
                     serverDict[inter.user.guild.id]['title_queue'].append((title, False, False, time))
                     thumb = info["thumbnail"]
                 await inter.edit_original_response(embed=await self.genEmbed([f"{title} has been Added to Queue", thumb, "Loading Video...", "Volume N/A"]))
+                await asyncio.sleep(1)
                 if not self.vc.is_playing() and not self.paused:
                     self.interact = inter
                     await self.goNext()
@@ -405,15 +405,28 @@ class Player(View):
             if not self.dead:
                 if inter.guild.voice_client is not None:
                     self.queue.clear()
-                    serverDict[inter.user.guild.id]['title_queue'].clear()
+                    serverDict[inter.user.guild.id]["title_queue"].clear()
                     self.songHist.clear()
                     self.dead = True
-                    button.label = "Dead"
+                    button.emoji = "❤"
+                    button.label = "Live"
                     await inter.message.edit(view=self)
-                    await disconnect(inter.guild.voice_client, inter)
+                    await inter.guild.voice_client.disconnect()
                     await inter.response.send_message("Died Successfully", delete_after=4)
+                    await asyncio.sleep(4)
                 else:
                     await inter.response.send_message("Did not Die Successfully", delete_after=4)
+            else:
+                if inter.guild.voice_client is None:
+                    self.dead = False
+                    button.emoji = u"\U0001F480"
+                    button.label = "Die"
+                    await inter.message.edit(view=self)
+                    self.vc = await inter.user.voice.channel.connect()
+                    await inter.response.send_message("Lived Successfully", delete_after=4)
+                    await asyncio.sleep(4)
+                else:
+                    await inter.response.send_message("Did not Live Successfully", delete_after=4)
         else:
             await inter.response.send_message("CANT CLICK THE BUTTONS IF YOU'RE NOT IN A VC", ephemeral=True)
 
