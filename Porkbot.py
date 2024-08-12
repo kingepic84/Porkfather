@@ -7,7 +7,6 @@ import discord
 import re
 import audioop
 import json
-import multiprocessing
 import yt_dlp
 from random import choices, shuffle
 from discord import app_commands, Interaction
