@@ -384,7 +384,7 @@ class Player(View):
         
     @button(emoji=u"\U0001F5C3", row=2, custom_id="getQueue")
     async def getQueue(self, inter:Interaction, button:Button):
-        if inter.user.voice.channel.id == self.vc.channel.id:
+        if inter.user.voice is not None and inter.user.voice.channel.id == self.vc.channel.id:
             bullet_list = sorted([f"**{serverDict[inter.user.guild.id]['title_queue'].index(title)+1}.** {title[0]}: {self.vc.source.progress} / {title[3]}" if serverDict[inter.user.guild.id]['title_queue'].index(title) == 0 else f"**{serverDict[inter.user.guild.id]['title_queue'].index(title)+1}.** {title[0]}: {title[3]}" for title in serverDict[inter.user.guild.id]['title_queue']], key=lambda x: int(x[2:x.index(".")]))
             queue_name = f"Current Song Queue"
             if len(serverDict[inter.user.guild.id]['title_queue']) > 0 and serverDict[inter.user.guild.id]['title_queue'][0][1]:
@@ -494,7 +494,7 @@ async def vplayer(inter: Interaction):
             embed.insert_field_at(1, name="Duration:", value="Duration N/A")
             embed.insert_field_at(2, name="Volume:", value="Volume N/A")
             embed.set_thumbnail(url="https://cdn.discordapp.com/attachments/1267870147394277438/1268237425474539722/Porkfather.png?ex=66abb1a4&is=66aa6024&hm=3dc314686cee3a7008e2774629ef158fcdd4fb6b7cb9088a675e317e3131374f&")
-            serverDict[inter.user.guild.id] = {"vidPlayer":Player(vc=vc, currEmbed=embed, timeout=3600), 'title_queue': []}
+            serverDict[inter.user.guild.id] = {"vidPlayer":Player(vc=vc, currEmbed=embed, timeout=21600), 'title_queue': []}
             await inter.channel.purge(limit=10, check=lambda c: len(c.components) > 0 and c.author.id == 1272003396290740326)
             await inter.edit_original_response(content="",embed=embed, view=serverDict[inter.user.guild.id]["vidPlayer"])
         elif 1272003396290740326 in vMembs:
