@@ -1,5 +1,3 @@
-# This example requires the 'message_content' privileged intent to function.
-
 import asyncio
 import os
 from typing import SupportsIndex
@@ -316,17 +314,21 @@ class Player(View):
         else:
             await inter.response.send_message("CANT CLICK THE BUTTONS IF YOU'RE NOT IN A VC", ephemeral=True)
 
-    @button(emoji="⏯", custom_id="pause", row=1)
+    @button(emoji="⏸", custom_id="pause", row=1)
     async def pause(self, inter: Interaction, button: Button):
         print(inter.user.display_name)
         if inter.user.voice is not None and inter.user.voice.channel.id == self.vc.channel.id:
             if not self.paused:
                 self.vc.pause()
                 self.paused = True
+                button.emoji = "▶"
+                await inter.message.edit(view=self)
                 await inter.response.send_message("Music Paused", delete_after=1)
             else:
+                button.emoji = "⏸"
                 self.vc.resume()
                 self.paused = False
+                await inter.message.edit(view=self)
                 await inter.response.send_message("Music Resumed", delete_after=1)
         else:
             await inter.response.send_message("CANT CLICK THE BUTTONS IF YOU'RE NOT IN A VC", ephemeral=True)
