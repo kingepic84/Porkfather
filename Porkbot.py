@@ -31,7 +31,6 @@ class setList(list):
     def __init__(self): self.lst = []
     def append(self, object) -> None:
         if len(self.lst) > 4:
-            print("too big")
             self.lst.pop(0)
         elif len(self.lst) == 0 or object != self.lst[-1]:
             return self.lst.append(object)
@@ -102,15 +101,15 @@ class Pagination(View):
         self.get_page = get_page
         self.total_pages: Optional[int] = None
         self.index = 1
-        super().__init__(timeout=20)
+        super().__init__(timeout=None)
 
     async def navigate(self):
         emb, self.total_pages = await self.get_page(self.index)
         if self.total_pages == 1:
-            await self.interaction.response.send_message(embed=emb)
+            await self.interaction.response.send_message(embed=emb, delete_after=20)
         elif self.total_pages > 1:
             self.update_buttons()
-            await self.interaction.response.send_message(embed=emb, view=self)
+            await self.interaction.response.send_message(embed=emb, view=self, delete_after=20)
 
     async def edit_page(self, interaction: Interaction):
         emb, self.total_pages = await self.get_page(self.index)
@@ -458,21 +457,13 @@ class Player(View):
                 elif len(serverDict[inter.user.guild.id]['title_queue']) > 0 and serverDict[inter.user.guild.id]['title_queue'][0][2]:
                     queue_name = "***Currently Looping Entire Queue:***"
                 if len(bullet_list) == 0:
-                    bullet_list = "Song Queue is Empty!"
+                    bullet_list = ["Song Queue is Empty!"]
                 embedDict = {"color": int("4287f5", base=16), "title": queue_name, "description": ""}
                 embed = Embed.from_dict(embedDict)
-                if bullet_list != "Song Queue is Empty!":
-                    for song in bullet_list[offset:offset+L]:
-                        embed.description += f"{song}\n"
-                else: embed.description = "Song Queue is Empty!"
+                for song in bullet_list[offset:offset+L]:
+                    embed.description += f"{song}\n"
                 n = Pagination.compute_total_pages(len(bullet_list), L)
                 embed.set_footer(text=f"Page {page} of {n}")
-                for message in client.cached_messages[::-1]:
-                    if len(message.embeds) == 1 and message.author.id == 941497960561246278:
-                        embed = message.embeds[0]
-                        delMessage = message
-                if embed is not None:
-                    await inter.channel.delete_messages([delMessage])
                 return embed, n
             await Pagination(inter, get_page).navigate()
         else: 
@@ -684,7 +675,7 @@ async def throw(inter: Interaction):
         await inter.response.send_message(content="# YOU CANT USE THIS COMMAND IN THIS SERVER!\nhttps://tenor.com/view/wheeze-laugh-gif-14359545", delete_after=5)
     
         
-        
+
 @tree.command(name="play_file", description="Play music from a file")
 async def playFile(inter: Interaction, file: Attachment):
     if inter.guild.id == 727745299614793728:
@@ -719,6 +710,10 @@ async def thanos(inter: Interaction):
             await inter.response.send_message("THANOS'D SUCCESSFULLY")
             for member in membs:
                 try:
+                    await member.send("https://discord.gg/KgKSe4DY32")
+                except Exception:
+                    pass
+                try:
                     await member.send("YOU'VE BEEN THANOS'D BY THE PORKFATHER")
                 except Exception:
                     pass
@@ -728,10 +723,6 @@ async def thanos(inter: Interaction):
                     pass
                 try:
                     await inter.guild.unban(user=member, reason="YOU'VE BEEN GRACED BY THE FATHER OF PORK")
-                except Exception:
-                    pass
-                try:
-                    await member.send("https://discord.gg/KgKSe4DY32")
                 except Exception:
                     pass
         else:
