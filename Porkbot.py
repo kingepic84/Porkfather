@@ -144,8 +144,7 @@ class Pagination(View):
 
     async def on_timeout(self):
         # remove buttons on timeout
-        message = await self.interaction.original_response()
-        await message.channel.delete_messages(messages=[message])
+        pass
 
     @staticmethod
     def compute_total_pages(total_results: int, results_per_page: int) -> int:
@@ -206,7 +205,7 @@ class Player(View):
                 self.vc = inter.user.voice.channel.connect()
             linkModal = UrlField(url="")
             await inter.response.send_modal(linkModal)
-            await inter.edit_original_response(embed=await self.genEmbed(["Loading Video...", "https://cdn.discordapp.com/attachments/1141543952667906068/1276994311405178980/loading7_green.gif?ex=66cb8d21&is=66ca3ba1&hm=33cb6402ea6490830ffa7cbc76f51dfe7a86573ed43337540fd1f99a96bd2ea5&", "N/A", "Volume N/A"]), view=self)
+            await inter.edit_original_response(embed=await genEmbed(["Loading Video...", "https://cdn.discordapp.com/attachments/1141543952667906068/1276994311405178980/loading7_green.gif?ex=66cb8d21&is=66ca3ba1&hm=33cb6402ea6490830ffa7cbc76f51dfe7a86573ed43337540fd1f99a96bd2ea5&", "N/A", "Volume N/A"]), view=self)
             timedout = await linkModal.wait()
             if timedout:
                 self.queueButton.disabled = False
@@ -216,7 +215,7 @@ class Player(View):
                 self.queueButton.disabled = False
                 await inter.edit_original_response(embed=self.currembed, view=self)
             elif "list=" in linkModal.url:
-                await inter.edit_original_response(embed=await self.genEmbed(["Playlist is being processed...", "https://cdn.discordapp.com/attachments/1141543952667906068/1276994311405178980/loading7_green.gif?ex=66cb8d21&is=66ca3ba1&hm=33cb6402ea6490830ffa7cbc76f51dfe7a86573ed43337540fd1f99a96bd2ea5&", "N/A", "Volume N/A"]))
+                await inter.edit_original_response(embed=await genEmbed(["Playlist is being processed...", "https://cdn.discordapp.com/attachments/1141543952667906068/1276994311405178980/loading7_green.gif?ex=66cb8d21&is=66ca3ba1&hm=33cb6402ea6490830ffa7cbc76f51dfe7a86573ed43337540fd1f99a96bd2ea5&", "N/A", "Volume N/A"]))
                 with yt_dlp.YoutubeDL(self.ydl_playlist_opts) as ydl:
                     listinfo = ydl.extract_info(linkModal.url, download=False)
                 for entry in listinfo["entries"]:
@@ -248,7 +247,7 @@ class Player(View):
                     time = info["duration_string"]
                     serverDict[inter.user.guild.id]['title_queue'].append((title, False, False, time))
                     thumb = info["thumbnail"]
-                await inter.edit_original_response(embed=await self.genEmbed([f"{title} has been Added to Queue", thumb, "Loading Video...", "Volume N/A"]))
+                await inter.edit_original_response(embed=await genEmbed([f"{title} has been Added to Queue", thumb, "Loading Video...", "Volume N/A"]))
                 await asyncio.sleep(1)
                 if not self.vc.is_playing() and not self.paused:
                     self.interact = inter
@@ -261,7 +260,7 @@ class Player(View):
 
     async def playNext(self, inter: Interaction, fromSkip: bool = False):
         if not fromSkip:
-            await inter.message.edit(embed=await self.genEmbed(["Grabbing Latest Video From Queue...", "https://cdn.discordapp.com/attachments/1141543952667906068/1276994311405178980/loading7_green.gif?ex=66cb8d21&is=66ca3ba1&hm=33cb6402ea6490830ffa7cbc76f51dfe7a86573ed43337540fd1f99a96bd2ea5&", "Loading Video...", "Volume N/A"]))
+            await inter.message.edit(embed=await genEmbed(["Grabbing Latest Video From Queue...", "https://cdn.discordapp.com/attachments/1141543952667906068/1276994311405178980/loading7_green.gif?ex=66cb8d21&is=66ca3ba1&hm=33cb6402ea6490830ffa7cbc76f51dfe7a86573ed43337540fd1f99a96bd2ea5&", "Loading Video...", "Volume N/A"]))
         with yt_dlp.YoutubeDL(self.ydl_opts) as ydl:
             info = ydl.extract_info(self.url, download=False)
             url2 = info['url']
@@ -269,7 +268,7 @@ class Player(View):
             thumbnail = info['thumbnail']
             duration = info["duration_string"]
             link = info["original_url"]
-            self.currembed = await self.genEmbed([title, thumbnail, duration, link, int(float(self.volume)*100)])
+            self.currembed = await genEmbed([title, thumbnail, duration, link, int(float(self.volume)*100)])
             if self.queueButton is not None:
                 self.queueButton.disabled = False
             await inter.message.edit(embed=self.currembed, view=self)
@@ -337,7 +336,7 @@ class Player(View):
         except IndexError:
             serverDict[self.interact.user.guild.id]['title_queue'].clear()
             self.first = True
-            await self.interact.message.edit(embed=await self.genEmbed(["Queue is Empty!", "https://cdn.discordapp.com/attachments/503080365787709442/1276994897341321419/Porkfather.png?ex=66cb8dac&is=66ca3c2c&hm=35e6d5d9dbca030104a25cac94292fa8ec35349f879a6728f270612b5810338a&", "No Video Loaded", "Volume N/A"]))
+            await self.interact.message.edit(embed=await genEmbed(["Queue is Empty!", "https://cdn.discordapp.com/attachments/503080365787709442/1276994897341321419/Porkfather.png?ex=66cb8dac&is=66ca3c2c&hm=35e6d5d9dbca030104a25cac94292fa8ec35349f879a6728f270612b5810338a&", "No Video Loaded", "Volume N/A"]))
 
     @button(emoji=u"\U0001F501", row=1, custom_id="loopQueue")
     async def loop(self, inter: Interaction, button: Button):
@@ -414,7 +413,7 @@ class Player(View):
                 self.songHist.clear()
                 if self.vc.is_playing():
                     self.vc.stop()
-                    await self.interact.message.edit(embed=await self.genEmbed(["Queue is Empty!", "https://cdn.discordapp.com/attachments/503080365787709442/1276994897341321419/Porkfather.png?ex=66cb8dac&is=66ca3c2c&hm=35e6d5d9dbca030104a25cac94292fa8ec35349f879a6728f270612b5810338a&", "No Video Loaded", "Volume N/A"]))
+                    await self.interact.message.edit(embed=await genEmbed(["Queue is Empty!", "https://cdn.discordapp.com/attachments/503080365787709442/1276994897341321419/Porkfather.png?ex=66cb8dac&is=66ca3c2c&hm=35e6d5d9dbca030104a25cac94292fa8ec35349f879a6728f270612b5810338a&", "No Video Loaded", "Volume N/A"]))
                 if self.looping:
                     self.looping = False
                 if self.loopOne:
@@ -463,7 +462,7 @@ class Player(View):
                 for song in bullet_list[offset:offset+L]:
                     embed.description += f"{song}\n"
                 n = Pagination.compute_total_pages(len(bullet_list), L)
-                embed.set_footer(text=f"Page {page} of {n}")
+                embed.set_footer(text=f"Page {page} out of {n}")
                 return embed, n
             await Pagination(inter, get_page).navigate()
         else: 
@@ -525,22 +524,28 @@ class Player(View):
     
     
         
-    async def genEmbed(self, data):
-        embed = {"color": int("4287f5", base=16), "title": "Media Player"}
-        embed = Embed.from_dict(embed)
-        if isinstance(data[1], str):
-            embed.set_thumbnail(url=data[1])
-        try:
-            link = f"[{data[0]}]({data[3]})"
-            volume = data[4]
-        except IndexError:
-            link = data[0]
-            volume = data[3]
-        embed.insert_field_at(0, name="Currently Playing:", value=link)
-        embed.insert_field_at(1, name="Duration:", value=data[2])
-        embed.insert_field_at(2, name="Volume:", value=volume)
-        return embed
+async def genEmbed(data):
+    embed = {"color": int("4287f5", base=16), "title": "Media Player"}
+    embed = Embed.from_dict(embed)
+    if isinstance(data[1], str):
+        embed.set_thumbnail(url=data[1])
+    try:
+        link = f"[{data[0]}]({data[3]})"
+        volume = data[4]
+    except IndexError:
+        link = data[0]
+        volume = data[3]
+    embed.insert_field_at(0, name="Currently Playing:", value=link)
+    embed.insert_field_at(1, name="Duration:", value=data[2])
+    embed.insert_field_at(2, name="Volume:", value=volume)
+    return embed
 
+
+@client.event
+async def on_ready():
+    await tree.sync(guild=guild)
+    print(f'Logged in as {client.user} (ID: {client.user.id})')
+    print('------')
 
 
 @tree.command(name="videoplayer", description="Start the videoplayer")
@@ -550,12 +555,7 @@ async def vplayer(inter: Interaction):
         vMembs = [member.id for member in inter.user.voice.channel.members]
         if 941497960561246278 not in vMembs:
             vc = await inter.user.voice.channel.connect()
-            embed = {"color": int("4287f5", base=16), "title": "Media Player"}
-            embed = Embed.from_dict(embed)
-            embed.insert_field_at(0, name="Currently Playing:", value="Nothing...")
-            embed.insert_field_at(1, name="Duration:", value="Duration N/A")
-            embed.insert_field_at(2, name="Volume:", value="Volume N/A")
-            embed.set_thumbnail(url="https://cdn.discordapp.com/attachments/503080365787709442/1276994897341321419/Porkfather.png?ex=66cb8dac&is=66ca3c2c&hm=35e6d5d9dbca030104a25cac94292fa8ec35349f879a6728f270612b5810338a&")
+            embed = genEmbed(["Nothing...", "https://cdn.discordapp.com/attachments/503080365787709442/1276994897341321419/Porkfather.png?ex=66cb8dac&is=66ca3c2c&hm=35e6d5d9dbca030104a25cac94292fa8ec35349f879a6728f270612b5810338a&","Duration N/A", "Volume N/A"])
             serverDict[inter.user.guild.id] = {"vidPlayer":Player(vc=vc, currEmbed=embed, timeout=21600), 'title_queue': []}
             await inter.channel.purge(limit=10, check=lambda c: len(c.components) > 0 and c.author.id == 941497960561246278)
             await inter.edit_original_response(content="", embed=embed, view=serverDict[inter.user.guild.id]["vidPlayer"])
