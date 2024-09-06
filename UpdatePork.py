@@ -4,6 +4,5 @@ for process in psutil.process_iter():
         process.kill()
         process.wait()
 git = subprocess.run(["git", "pull"], stdout=sys.stdout, stderr=sys.stderr)
-if git.check_returncode():
-    runpy = subprocess.Popen(["nohup" ,"python3" ,"Porkbot.py"], stdout=sys.stdout, stderr=sys.stderr, shell=True)
+subprocess.Popen(["nohup" ,"python3" ,"Porkbot.py"], stdout=sys.stdout, stderr=sys.stderr, shell=True)
 print('Porkfather Restarted')
