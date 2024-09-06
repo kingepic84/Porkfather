@@ -555,7 +555,7 @@ async def vplayer(inter: Interaction):
         vMembs = [member.id for member in inter.user.voice.channel.members]
         if 941497960561246278 not in vMembs:
             vc = await inter.user.voice.channel.connect()
-            embed = genEmbed(["Nothing...", "https://cdn.discordapp.com/attachments/503080365787709442/1276994897341321419/Porkfather.png?ex=66cb8dac&is=66ca3c2c&hm=35e6d5d9dbca030104a25cac94292fa8ec35349f879a6728f270612b5810338a&","Duration N/A", "Volume N/A"])
+            embed = await genEmbed(["Nothing...", "https://cdn.discordapp.com/attachments/503080365787709442/1276994897341321419/Porkfather.png?ex=66cb8dac&is=66ca3c2c&hm=35e6d5d9dbca030104a25cac94292fa8ec35349f879a6728f270612b5810338a&","Duration N/A", "Volume N/A"])
             serverDict[inter.user.guild.id] = {"vidPlayer":Player(vc=vc, currEmbed=embed, timeout=21600), 'title_queue': []}
             await inter.channel.purge(limit=10, check=lambda c: len(c.components) > 0 and c.author.id == 941497960561246278)
             await inter.edit_original_response(content="", embed=embed, view=serverDict[inter.user.guild.id]["vidPlayer"])
