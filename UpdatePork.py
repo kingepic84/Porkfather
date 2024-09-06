@@ -8,5 +8,6 @@ if git.check_returncode():
     pass
 else:
     exit(1)
+print("Porkfather Restarted")
 pork = subprocess.run(["nohup" ,"python3" ,"Porkbot.py"], stdout=sys.stdout, stderr=sys.stderr, shell=True)
 
