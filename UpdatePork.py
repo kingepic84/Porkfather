@@ -1,6 +1,6 @@
 import psutil,subprocess, sys
 for process in psutil.process_iter():
-    if process.name() == "python3 Porkbot.py" or process.name() == "py Porkbot.py":
+    if "python3 Porkbot.py" in process.name():
         process.kill()
         process.wait()
 git = subprocess.run(["git", "pull"], stdout=sys.stdout, stderr=sys.stderr)
