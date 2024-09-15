@@ -12,7 +12,9 @@ from discord import (Attachment, AudioSource, ButtonStyle, Embed,
                      FFmpegPCMAudio, File, Interaction, Member,
                      PCMVolumeTransformer, PermissionOverwrite, VoiceClient,
                      app_commands)
+from discord.abc import GuildChannel as gc
 from discord.ui import Button, Modal, TextInput, View, button
+
 
 intents = discord.Intents.default()
 client = discord.Client(intents=intents.all())
@@ -753,6 +755,14 @@ async def bible(inter: Interaction):
     else:
         await inter.response.send_message(content="# YOU CANT USE THIS COMMAND IN THIS SERVER!\nhttps://tenor.com/view/wheeze-laugh-gif-14359545", delete_after=5)
     
+
+@tree.command(name="disconnect", description="Disconnects the bot from the voice chat")
+async def modDiconnect(inter: Interaction):
+    if gc.permissions_for(inter.channel, inter.user).move_members and len(client.voice_clients) > 0:
+        await client.voice_clients[0].disconnect()
+        await inter.response.send_message("Disconnected Successfully!", delete_after=5)
+    else: 
+        await inter.response.send_message("You got enough permissions to do that, bub.", delete_after=5)
         
 async def disconnect(channel:VoiceClient, inter: Interaction = None):
     await channel.disconnect()

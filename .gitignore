@@ -4,5 +4,4 @@ musicbot.py
 wallmanPi.py
 *.txt
 plot.png
-/web_cache/*
-/cookies/*
+web/*
