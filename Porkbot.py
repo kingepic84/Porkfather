@@ -666,7 +666,7 @@ async def nugget(inter: Interaction):
         await inter.response.send_message(content="# YOU CANT USE THIS COMMAND IN THIS SERVER!\nhttps://tenor.com/view/wheeze-laugh-gif-14359545", delete_after=5)
 
 @tree.command(name="gedagedigedagedo_anime", description="Funny Chicken Nugget")
-async def nugget(inter: Interaction):
+async def blueArchive(inter: Interaction):
     if inter.guild.id == 727745299614793728:
         if inter.guild.voice_client is not None:
             await inter.response.send_message("I'm already in a VC!")
