@@ -210,7 +210,7 @@ class Player(View):
                 self.vc = inter.user.voice.channel.connect()
             linkModal = UrlField(url="")
             await inter.response.send_modal(linkModal)
-            await inter.edit_original_response(embed=await genEmbed(["Loading Video...", loading, "N/A", "Volume N/A"]), view=self)
+            await inter.edit_original_response(embed=await genEmbed(["Loading Video...", loading, "N/A", "Volume N/A"]), view=self, file=loading)
             timedout = await linkModal.wait()
             if timedout:
                 self.queueButton.disabled = False
@@ -220,7 +220,7 @@ class Player(View):
                 self.queueButton.disabled = False
                 await inter.edit_original_response(embed=self.currembed, view=self)
             elif "list=" in linkModal.url:
-                await inter.edit_original_response(embed=await genEmbed(["Playlist is being processed...", loading, "N/A", "Volume N/A"]))
+                await inter.edit_original_response(embed=await genEmbed(["Playlist is being processed...", loading, "N/A", "Volume N/A"]), file=loading)
                 with yt_dlp.YoutubeDL(self.ydl_playlist_opts) as ydl:
                     listinfo = ydl.extract_info(linkModal.url, download=False)
                 for entry in listinfo["entries"]:
@@ -265,7 +265,7 @@ class Player(View):
 
     async def playNext(self, inter: Interaction, fromSkip: bool = False):
         if not fromSkip:
-            await inter.message.edit(embed=await genEmbed(["Grabbing Latest Video From Queue...", loading, "Loading Video...", "Volume N/A"]))
+            await inter.message.edit(embed=await genEmbed(["Grabbing Latest Video From Queue...", loading, "Loading Video...", "Volume N/A"]), file=loading)
         with yt_dlp.YoutubeDL(self.ydl_opts) as ydl:
             info = ydl.extract_info(self.url, download=False)
             url2 = info['url']
@@ -341,7 +341,7 @@ class Player(View):
         except IndexError:
             serverDict[self.interact.user.guild.id]['title_queue'].clear()
             self.first = True
-            await self.interact.message.edit(embed=await genEmbed(["Queue is Empty!", porkfather, "No Video Loaded", "Volume N/A"]))
+            await self.interact.message.edit(embed=await genEmbed(["Queue is Empty!", porkfather, "No Video Loaded", "Volume N/A"]), file=porkfather)
 
     @button(emoji=u"\U0001F501", row=1, custom_id="loopQueue")
     async def loop(self, inter: Interaction, button: Button):
@@ -418,7 +418,7 @@ class Player(View):
                 self.songHist.clear()
                 if self.vc.is_playing():
                     self.vc.stop()
-                    await self.interact.message.edit(embed=await genEmbed(["Queue is Empty!", porkfather, "No Video Loaded", "Volume N/A"]))
+                    await self.interact.message.edit(embed=await genEmbed(["Queue is Empty!", porkfather, "No Video Loaded", "Volume N/A"]), file=porkfather)
                 if self.looping:
                     self.looping = False
                 if self.loopOne:
@@ -565,7 +565,7 @@ async def vplayer(inter: Interaction):
             embed = await genEmbed(["Nothing...", porkfather, "Duration N/A", "Volume N/A"])
             serverDict[inter.user.guild.id] = {"vidPlayer":Player(vc=vc, currEmbed=embed, timeout=21600), 'title_queue': []}
             await inter.channel.purge(limit=10, check=lambda c: len(c.components) > 0 and c.author.id == 1272003396290740326)
-            await inter.edit_original_response(content="", embed=embed, view=serverDict[inter.user.guild.id]["vidPlayer"])
+            await inter.edit_original_response(content="", embed=embed, view=serverDict[inter.user.guild.id]["vidPlayer"], file=porkfather)
         elif 1272003396290740326 in vMembs:
             await inter.edit_original_response(content="I'm already in the VC!")
     else:
@@ -707,7 +707,7 @@ async def playFile(inter: Interaction, file: Attachment):
                 embedDict = {"color":int("03ecfc", base=16), "title": "Now Playing:", "description": f"{file.filename[:file.filename.rindex('.')]}"}
                 embed = Embed.from_dict(embedDict)
                 embed.set_thumbnail(url=f"attachment://{porkfather.filename}")
-                await inter.response.send_message(embed=embed)
+                await inter.response.send_message(embed=embed, file=porkfather)
             else:
                 await inter.response.send_message(f"Invalid File!", delete_after=5)
     else:
