@@ -599,7 +599,7 @@ async def hello(interaction: Interaction):
 @tree.command(name="nuke", description="Nukes the Server")
 async def nuke(inter: Interaction):
     if inter.guild.id == 727745299614793728:
-        boom = File(f"{os.getcwd()+os.sep}blowing-up-killed-the-toilet.gif", filename="boom.gif")
+        boom = File(f"../res/img/blowing-up-killed-the-toilet.gif", filename="boom.gif")
         colors = "123456789abcdef"
         color = "".join(choices(colors, k=6))
         embedContent = {"color": int(color, base=16),"title": "BOOOOOOOOOOOOOOOOOOOOOOOOOOOM!!!!!"}
@@ -647,7 +647,7 @@ async def kicks(inter: Interaction):
             await inter.response.send_message("I'm already in a VC!", delete_after=5)
         channel = await inter.user.voice.channel.connect()
         coro = disconnect(channel)
-        channel.play(FFmpegPCMAudio("ALDIODER KIDS.mp3"), after=lambda e: asyncio.run_coroutine_threadsafe(coro, client.loop))
+        channel.play(FFmpegPCMAudio("../res/audio/ALDIODER KIDS.mp3"), after=lambda e: asyncio.run_coroutine_threadsafe(coro, client.loop))
         await inter.response.send_message("ALDIODER KIDS", delete_after=5)
     else:
         await inter.response.send_message(content="# YOU CANT USE THIS COMMAND IN THIS SERVER!\nhttps://tenor.com/view/wheeze-laugh-gif-14359545", delete_after=5)
@@ -660,7 +660,7 @@ async def nugget(inter: Interaction):
             await inter.response.send_message("I'm already in a VC!", delete_after=5)
         channel = await inter.user.voice.channel.connect()
         coro = disconnect(channel)
-        channel.play(FFmpegPCMAudio("gedagedigedagedago.mp3"), after=lambda e: asyncio.run_coroutine_threadsafe(coro, client.loop))
+        channel.play(FFmpegPCMAudio("../res/audio/gedagedigedagedago.mp3"), after=lambda e: asyncio.run_coroutine_threadsafe(coro, client.loop))
         await inter.response.send_message("Gedagedigedagedo".upper(), delete_after=5)
     else:
         await inter.response.send_message(content="# YOU CANT USE THIS COMMAND IN THIS SERVER!\nhttps://tenor.com/view/wheeze-laugh-gif-14359545", delete_after=5)
@@ -672,7 +672,7 @@ async def blueArchive(inter: Interaction):
             await inter.response.send_message("I'm already in a VC!", delete_after=5)
         channel = await inter.user.voice.channel.connect()
         coro = disconnect(channel)
-        channel.play(FFmpegPCMAudio("yt1s.com_-_Gedagedigedagedo.mp4"), after=lambda e: asyncio.run_coroutine_threadsafe(coro, client.loop))
+        channel.play(FFmpegPCMAudio("../res/video/yt1s.com_-_Gedagedigedagedo.mp4"), after=lambda e: asyncio.run_coroutine_threadsafe(coro, client.loop))
         await inter.response.send_message("Gedagedigedagedo".upper(), delete_after=5)
     else:
         await inter.response.send_message(content="# YOU CANT USE THIS COMMAND IN THIS SERVER!\nhttps://tenor.com/view/wheeze-laugh-gif-14359545", delete_after=5)
