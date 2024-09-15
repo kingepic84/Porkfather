@@ -706,7 +706,7 @@ async def playFile(inter: Interaction, file: Attachment):
                 channel.play(source, after=lambda e: asyncio.run_coroutine_threadsafe(coro, client.loop))
                 embedDict = {"color":int("03ecfc", base=16), "title": "Now Playing:", "description": f"{file.filename[:file.filename.rindex('.')]}"}
                 embed = Embed.from_dict(embedDict)
-                embed.set_thumbnail(url="")
+                embed.set_thumbnail(url="https://cdn.discordapp.com/attachments/503080365787709442/1276994897341321419/Porkfather.png?ex=66cb8dac&is=66ca3c2c&hm=35e6d5d9dbca030104a25cac94292fa8ec35349f879a6728f270612b5810338a&")
                 await inter.response.send_message(embed=embed)
             else:
                 await inter.response.send_message(f"Invalid File!", delete_after=5)
