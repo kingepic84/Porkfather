@@ -535,7 +535,7 @@ async def genEmbed(data):
     if isinstance(data[1], str):
         embed.set_thumbnail(url=data[1])
     elif isinstance(data[1], File):
-        embed.set_thumbnail(url=f"attachmend://{data[1].filename}")
+        embed.set_thumbnail(url=f"attachment://{data[1].filename}")
     try:
         link = f"[{data[0]}]({data[3]})"
         volume = data[4]
@@ -677,7 +677,7 @@ async def blueArchive(inter: Interaction):
             await inter.response.send_message("I'm already in a VC!", delete_after=5)
         channel = await inter.user.voice.channel.connect()
         coro = disconnect(channel)
-        channel.play(FFmpegPCMAudio("../res/video/_Gedagedigedagedo.mp4"), after=lambda e: asyncio.run_coroutine_threadsafe(coro, client.loop))
+        channel.play(FFmpegPCMAudio("../res/audio/Gedagedigedagedo.mp4"), after=lambda e: asyncio.run_coroutine_threadsafe(coro, client.loop))
         await inter.response.send_message("Gedagedigedagedo".upper(), delete_after=5)
     else:
         await inter.response.send_message(content="# YOU CANT USE THIS COMMAND IN THIS SERVER!\nhttps://tenor.com/view/wheeze-laugh-gif-14359545", delete_after=5)
