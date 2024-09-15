@@ -644,7 +644,7 @@ async def warn(inter: Interaction, user: Member, message: str):
 async def kicks(inter: Interaction):
     if inter.guild.id == 727745299614793728:
         if inter.guild.voice_client is not None:
-            await inter.guild.voice_client.disconnect()
+            await inter.response.send_message("I'm already in a VC!", delete_after=5)
         channel = await inter.user.voice.channel.connect()
         coro = disconnect(channel)
         channel.play(FFmpegPCMAudio("ALDIODER KIDS.mp3"), after=lambda e: asyncio.run_coroutine_threadsafe(coro, client.loop))
@@ -657,7 +657,7 @@ async def kicks(inter: Interaction):
 async def nugget(inter: Interaction):
     if inter.guild.id == 727745299614793728:
         if inter.guild.voice_client is not None:
-            await inter.response.send_message("I'm already in a VC!")
+            await inter.response.send_message("I'm already in a VC!", delete_after=5)
         channel = await inter.user.voice.channel.connect()
         coro = disconnect(channel)
         channel.play(FFmpegPCMAudio("gedagedigedagedago.mp3"), after=lambda e: asyncio.run_coroutine_threadsafe(coro, client.loop))
@@ -669,7 +669,7 @@ async def nugget(inter: Interaction):
 async def blueArchive(inter: Interaction):
     if inter.guild.id == 727745299614793728:
         if inter.guild.voice_client is not None:
-            await inter.response.send_message("I'm already in a VC!")
+            await inter.response.send_message("I'm already in a VC!", delete_after=5)
         channel = await inter.user.voice.channel.connect()
         coro = disconnect(channel)
         channel.play(FFmpegPCMAudio("yt1s.com_-_Gedagedigedagedo.mp4"), after=lambda e: asyncio.run_coroutine_threadsafe(coro, client.loop))
