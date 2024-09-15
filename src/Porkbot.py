@@ -677,7 +677,7 @@ async def blueArchive(inter: Interaction):
             await inter.response.send_message("I'm already in a VC!", delete_after=5)
         channel = await inter.user.voice.channel.connect()
         coro = disconnect(channel)
-        channel.play(FFmpegPCMAudio("../res/audio/Gedagedigedagedo.mp4"), after=lambda e: asyncio.run_coroutine_threadsafe(coro, client.loop))
+        channel.play(FFmpegPCMAudio("../res/video/Gedagedigedagedo.mp4"), after=lambda e: asyncio.run_coroutine_threadsafe(coro, client.loop))
         await inter.response.send_message("Gedagedigedagedo".upper(), delete_after=5)
     else:
         await inter.response.send_message(content="# YOU CANT USE THIS COMMAND IN THIS SERVER!\nhttps://tenor.com/view/wheeze-laugh-gif-14359545", delete_after=5)
