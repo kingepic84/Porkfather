@@ -613,7 +613,7 @@ async def nuke(inter: Interaction):
 @tree.command(name="dog", description="Dog go boom")
 async def dog(inter: Interaction):
     if inter.guild.id == 727745299614793728:
-        boom = File(f"{os.getcwd()+os.sep}dog_go_boom.mp4", filename="boom.mp4")
+        boom = File(f"../res/video/dog_go_boom.mp4", filename="boom.mp4")
         await inter.response.send_message(file=boom)
     else:
         await inter.response.send_message(content="# YOU CANT USE THIS COMMAND IN THIS SERVER!\nhttps://tenor.com/view/wheeze-laugh-gif-14359545", delete_after=5)
@@ -681,7 +681,7 @@ async def blueArchive(inter: Interaction):
 @tree.command(name="rock", description="Throws a Rock")
 async def throw(inter: Interaction):
     if inter.guild.id == 727745299614793728:
-        boom = File(f"{os.getcwd()+os.sep}rapidsave.com_guy_wraps_rock_in_copper_wire_and_throws_it_at-a84x7eer4ro81.mp4", filename="boom.mp4")
+        boom = File(f"../res/video/rapidsave.com_guy_wraps_rock_in_copper_wire_and_throws_it_at-a84x7eer4ro81.mp4", filename="boom.mp4")
         await inter.response.send_message(file=boom)
     else:
         await inter.response.send_message(content="# YOU CANT USE THIS COMMAND IN THIS SERVER!\nhttps://tenor.com/view/wheeze-laugh-gif-14359545", delete_after=5)
