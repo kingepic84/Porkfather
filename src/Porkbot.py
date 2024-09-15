@@ -759,6 +759,6 @@ async def disconnect(channel:VoiceClient, inter: Interaction = None):
             await inter.delete_original_response()
         except Exception:
             pass
-with open("auth.txt") as key:
+with open("../auth.txt") as key:
     keyStr = key.readline().strip()
     client.run(keyStr)
