@@ -576,8 +576,10 @@ async def vplayer(inter: Interaction):
 async def resend(inter: Interaction):
     embed = None
     if inter.guild.voice_client is not None and inter.user.voice is not None:
+        print(client.cached_messages)
         if inter.channel.id == client.cached_messages[-1].channel.id:
             for message in client.cached_messages[::-1]:
+                print(message.components)
                 if len(message.components) > 0 and len(message.components[0].children) == 10:
                     embed = message.embeds[0]
                     delMessage = message
