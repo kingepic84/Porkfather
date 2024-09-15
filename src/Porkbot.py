@@ -761,11 +761,10 @@ async def modDiconnect(inter: Interaction):
     if gc.permissions_for(inter.channel, inter.user).move_members and len(client.voice_clients) > 0:
         await client.voice_clients[0].disconnect()
         await inter.response.send_message("Disconnected Successfully!", delete_after=5)
-    elif len(client.voice_clients) > 0:
+    elif len(client.voice_clients) <= 0:
         await inter.response.send_message("Not in a VC!", delete_after=5)
-        
     else: 
-        await inter.response.send_message("You got enough permissions to do that, bub.", delete_after=5)
+        await inter.response.send_message("You don't got enough permissions to do that, bub.", delete_after=5)
 
 async def disconnect(channel:VoiceClient, inter: Interaction = None):
     await channel.disconnect()
