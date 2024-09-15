@@ -1,7 +1,3 @@
-bot.py
-bot1.py
-musicbot.py
-wallmanPi.py
+*.py
 *.txt
-plot.png
 web/*
