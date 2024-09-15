@@ -9,4 +9,4 @@ The Porkfather is a utility bot created for discord that can play youtube links,
 - Meme sounds and commands
 
 ## Contributing:
-If you'd like to contribute to the Porkfather's Development, Please submti a pull request, I'll look it over and determine if it should be added.
+If you'd like to contribute to the Porkfather's Development, Please submit a pull request, I'll look it over and determine if it should be added.
