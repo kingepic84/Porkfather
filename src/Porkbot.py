@@ -25,6 +25,11 @@ vc = None
 currEmbed = None
 serverDict: dict[int, dict[View, list]] = {}
 L = 15
+porkfather = File("../res/img/Porkfather.png", filename="Porkfather.png")
+loading = File("../res/img/loading.gif", filename="loading.gif")
+nukeFile = File("../res/img/nuke.gif", filename="nuke.gif")
+rock = File(f"../res/video/rock.mp4", filename="rock.mp4")
+dogFile = File(f"../res/video/dog_go_boom.mp4", filename="dog.mp4")
 
 
 class setList(list):
@@ -205,7 +210,7 @@ class Player(View):
                 self.vc = inter.user.voice.channel.connect()
             linkModal = UrlField(url="")
             await inter.response.send_modal(linkModal)
-            await inter.edit_original_response(embed=await genEmbed(["Loading Video...", "https://cdn.discordapp.com/attachments/1141543952667906068/1276994311405178980/loading7_green.gif?ex=66cb8d21&is=66ca3ba1&hm=33cb6402ea6490830ffa7cbc76f51dfe7a86573ed43337540fd1f99a96bd2ea5&", "N/A", "Volume N/A"]), view=self)
+            await inter.edit_original_response(embed=await genEmbed(["Loading Video...", loading, "N/A", "Volume N/A"]), view=self)
             timedout = await linkModal.wait()
             if timedout:
                 self.queueButton.disabled = False
@@ -215,7 +220,7 @@ class Player(View):
                 self.queueButton.disabled = False
                 await inter.edit_original_response(embed=self.currembed, view=self)
             elif "list=" in linkModal.url:
-                await inter.edit_original_response(embed=await genEmbed(["Playlist is being processed...", "https://cdn.discordapp.com/attachments/1141543952667906068/1276994311405178980/loading7_green.gif?ex=66cb8d21&is=66ca3ba1&hm=33cb6402ea6490830ffa7cbc76f51dfe7a86573ed43337540fd1f99a96bd2ea5&", "N/A", "Volume N/A"]))
+                await inter.edit_original_response(embed=await genEmbed(["Playlist is being processed...", loading, "N/A", "Volume N/A"]))
                 with yt_dlp.YoutubeDL(self.ydl_playlist_opts) as ydl:
                     listinfo = ydl.extract_info(linkModal.url, download=False)
                 for entry in listinfo["entries"]:
@@ -260,7 +265,7 @@ class Player(View):
 
     async def playNext(self, inter: Interaction, fromSkip: bool = False):
         if not fromSkip:
-            await inter.message.edit(embed=await genEmbed(["Grabbing Latest Video From Queue...", "https://cdn.discordapp.com/attachments/1141543952667906068/1276994311405178980/loading7_green.gif?ex=66cb8d21&is=66ca3ba1&hm=33cb6402ea6490830ffa7cbc76f51dfe7a86573ed43337540fd1f99a96bd2ea5&", "Loading Video...", "Volume N/A"]))
+            await inter.message.edit(embed=await genEmbed(["Grabbing Latest Video From Queue...", loading, "Loading Video...", "Volume N/A"]))
         with yt_dlp.YoutubeDL(self.ydl_opts) as ydl:
             info = ydl.extract_info(self.url, download=False)
             url2 = info['url']
@@ -336,7 +341,7 @@ class Player(View):
         except IndexError:
             serverDict[self.interact.user.guild.id]['title_queue'].clear()
             self.first = True
-            await self.interact.message.edit(embed=await genEmbed(["Queue is Empty!", "https://cdn.discordapp.com/attachments/503080365787709442/1276994897341321419/Porkfather.png?ex=66cb8dac&is=66ca3c2c&hm=35e6d5d9dbca030104a25cac94292fa8ec35349f879a6728f270612b5810338a&", "No Video Loaded", "Volume N/A"]))
+            await self.interact.message.edit(embed=await genEmbed(["Queue is Empty!", porkfather, "No Video Loaded", "Volume N/A"]))
 
     @button(emoji=u"\U0001F501", row=1, custom_id="loopQueue")
     async def loop(self, inter: Interaction, button: Button):
@@ -413,7 +418,7 @@ class Player(View):
                 self.songHist.clear()
                 if self.vc.is_playing():
                     self.vc.stop()
-                    await self.interact.message.edit(embed=await genEmbed(["Queue is Empty!", "https://cdn.discordapp.com/attachments/503080365787709442/1276994897341321419/Porkfather.png?ex=66cb8dac&is=66ca3c2c&hm=35e6d5d9dbca030104a25cac94292fa8ec35349f879a6728f270612b5810338a&", "No Video Loaded", "Volume N/A"]))
+                    await self.interact.message.edit(embed=await genEmbed(["Queue is Empty!", porkfather, "No Video Loaded", "Volume N/A"]))
                 if self.looping:
                     self.looping = False
                 if self.loopOne:
@@ -529,6 +534,8 @@ async def genEmbed(data):
     embed = Embed.from_dict(embed)
     if isinstance(data[1], str):
         embed.set_thumbnail(url=data[1])
+    elif isinstance(data[1], File):
+        embed.set_thumbnail(url=f"attachmend://{data[1].filename}")
     try:
         link = f"[{data[0]}]({data[3]})"
         volume = data[4]
@@ -555,7 +562,7 @@ async def vplayer(inter: Interaction):
         vMembs = [member.id for member in inter.user.voice.channel.members]
         if 1272003396290740326 not in vMembs:
             vc = await inter.user.voice.channel.connect()
-            embed = await genEmbed(["Nothing...", "https://cdn.discordapp.com/attachments/503080365787709442/1276994897341321419/Porkfather.png?ex=66cb8dac&is=66ca3c2c&hm=35e6d5d9dbca030104a25cac94292fa8ec35349f879a6728f270612b5810338a&","Duration N/A", "Volume N/A"])
+            embed = await genEmbed(["Nothing...", porkfather, "Duration N/A", "Volume N/A"])
             serverDict[inter.user.guild.id] = {"vidPlayer":Player(vc=vc, currEmbed=embed, timeout=21600), 'title_queue': []}
             await inter.channel.purge(limit=10, check=lambda c: len(c.components) > 0 and c.author.id == 1272003396290740326)
             await inter.edit_original_response(content="", embed=embed, view=serverDict[inter.user.guild.id]["vidPlayer"])
@@ -599,13 +606,12 @@ async def hello(interaction: Interaction):
 @tree.command(name="nuke", description="Nukes the Server")
 async def nuke(inter: Interaction):
     if inter.guild.id == 727745299614793728:
-        boom = File(f"../res/img/blowing-up-killed-the-toilet.gif", filename="boom.gif")
         colors = "123456789abcdef"
         color = "".join(choices(colors, k=6))
         embedContent = {"color": int(color, base=16),"title": "BOOOOOOOOOOOOOOOOOOOOOOOOOOOM!!!!!"}
         embed = Embed.from_dict(embedContent)
-        embed.set_image(url="attachment://boom.gif")
-        await inter.response.send_message(embed=embed, file=boom)
+        embed.set_image(url=f"attachment://{nukeFile.filename}")
+        await inter.response.send_message(embed=embed, file=nukeFile)
     else:
         await inter.response.send_message(content="# YOU CANT USE THIS COMMAND IN THIS SERVER!\nhttps://tenor.com/view/wheeze-laugh-gif-14359545", delete_after=5)
 
@@ -613,8 +619,7 @@ async def nuke(inter: Interaction):
 @tree.command(name="dog", description="Dog go boom")
 async def dog(inter: Interaction):
     if inter.guild.id == 727745299614793728:
-        boom = File(f"../res/video/dog_go_boom.mp4", filename="boom.mp4")
-        await inter.response.send_message(file=boom)
+        await inter.response.send_message(file=dogFile)
     else:
         await inter.response.send_message(content="# YOU CANT USE THIS COMMAND IN THIS SERVER!\nhttps://tenor.com/view/wheeze-laugh-gif-14359545", delete_after=5)
 
@@ -672,7 +677,7 @@ async def blueArchive(inter: Interaction):
             await inter.response.send_message("I'm already in a VC!", delete_after=5)
         channel = await inter.user.voice.channel.connect()
         coro = disconnect(channel)
-        channel.play(FFmpegPCMAudio("../res/video/yt1s.com_-_Gedagedigedagedo.mp4"), after=lambda e: asyncio.run_coroutine_threadsafe(coro, client.loop))
+        channel.play(FFmpegPCMAudio("../res/video/_Gedagedigedagedo.mp4"), after=lambda e: asyncio.run_coroutine_threadsafe(coro, client.loop))
         await inter.response.send_message("Gedagedigedagedo".upper(), delete_after=5)
     else:
         await inter.response.send_message(content="# YOU CANT USE THIS COMMAND IN THIS SERVER!\nhttps://tenor.com/view/wheeze-laugh-gif-14359545", delete_after=5)
@@ -681,8 +686,7 @@ async def blueArchive(inter: Interaction):
 @tree.command(name="rock", description="Throws a Rock")
 async def throw(inter: Interaction):
     if inter.guild.id == 727745299614793728:
-        boom = File(f"../res/video/rapidsave.com_guy_wraps_rock_in_copper_wire_and_throws_it_at-a84x7eer4ro81.mp4", filename="boom.mp4")
-        await inter.response.send_message(file=boom)
+        await inter.response.send_message(file=rock)
     else:
         await inter.response.send_message(content="# YOU CANT USE THIS COMMAND IN THIS SERVER!\nhttps://tenor.com/view/wheeze-laugh-gif-14359545", delete_after=5)
     
@@ -702,7 +706,7 @@ async def playFile(inter: Interaction, file: Attachment):
                 channel.play(source, after=lambda e: asyncio.run_coroutine_threadsafe(coro, client.loop))
                 embedDict = {"color":int("03ecfc", base=16), "title": "Now Playing:", "description": f"{file.filename[:file.filename.rindex('.')]}"}
                 embed = Embed.from_dict(embedDict)
-                embed.set_thumbnail(url="https://cdn.discordapp.com/attachments/1267870147394277438/1268237425474539722/Porkfather.png?ex=66abb1a4&is=66aa6024&hm=3dc314686cee3a7008e2774629ef158fcdd4fb6b7cb9088a675e317e3131374f&")
+                embed.set_thumbnail(url=f"attachment://{porkfather.filename}")
                 await inter.response.send_message(embed=embed)
             else:
                 await inter.response.send_message(f"Invalid File!", delete_after=5)
