@@ -563,7 +563,7 @@ async def vplayer(inter: Interaction):
         if 1272003396290740326 not in vMembs:
             vc = await inter.user.voice.channel.connect()
             embed = await genEmbed(["Nothing...", "https://cdn.discordapp.com/attachments/503080365787709442/1276994897341321419/Porkfather.png?ex=66cb8dac&is=66ca3c2c&hm=35e6d5d9dbca030104a25cac94292fa8ec35349f879a6728f270612b5810338a&","Duration N/A", "Volume N/A"])
-            serverDict[inter.user.guild.id] = {"vidPlayer":Player(vc=vc, currEmbed=embed, timeout=21600), 'title_queue': []}
+            serverDict[inter.user.guild.id] = {"vidPlayer":Player(vc=vc, currEmbed=embed, timeout=21600), 'title_queue': [], "channel": inter.channel.id}
             await inter.channel.purge(limit=10, check=lambda c: len(c.components) > 0 and c.author.id == 1272003396290740326)
             await inter.edit_original_response(content="", embed=embed, view=serverDict[inter.user.guild.id]["vidPlayer"])
         elif 1272003396290740326 in vMembs:
@@ -576,18 +576,16 @@ async def vplayer(inter: Interaction):
 async def resend(inter: Interaction):
     embed = None
     if inter.guild.voice_client is not None and inter.user.voice is not None:
-        print(client.cached_messages)
-        if inter.channel.id == client.cached_messages[-1].channel.id:
+        if inter.channel.id == serverDict[inter.user.guild.id]["channel"]:
             for message in client.cached_messages[::-1]:
-                print(message.components)
-                if len(message.components) > 0 and len(message.components[0].children) == 10:
+                if len(message.components) > 0 and len(message.components[0].children) == 5:
                     embed = message.embeds[0]
                     delMessage = message
             if embed is not None:
                 await inter.response.send_message(embed=embed, view=serverDict[inter.user.guild.id]['vidPlayer'])
                 await inter.channel.delete_messages([delMessage])
                 for message in client.cached_messages[::-1]:
-                    if len(message.components) > 0:
+                    if len(message.components) > 0 and serverDict[inter.user.guild.id]["vidPlayer"].interact is not None:
                         serverDict[inter.user.guild.id]["vidPlayer"].interact.message = message
             else:
                 await inter.response.send_message("Nothing to Refresh!", delete_after=3)
