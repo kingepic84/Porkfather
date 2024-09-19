@@ -37,7 +37,7 @@ class setList(list):
     def append(self, object) -> None:
         if len(self.lst) > 4:
             self.lst.pop(0)
-        elif len(self.lst) == 0 or object != self.lst[-1]:
+        if len(self.lst) == 0 or object != self.lst[-1]:
             return self.lst.append(object)
     def __len__(self) -> int: return len(self.lst)
     def pop(self, index: SupportsIndex = -1) -> tuple: return self.lst.pop(index)
@@ -292,7 +292,9 @@ class Player(View):
             fut.result()
         except Exception as e:
             import traceback
-            print(traceback.format_exception(e))
+            tb = traceback.format_exception(e)
+            for i in tb:
+                print(i)
     
     async def goNext(self):
         try:
@@ -568,8 +570,12 @@ async def vplayer(inter: Interaction):
             await inter.edit_original_response(content="", embed=embed, view=serverDict[inter.user.guild.id]["vidPlayer"])
         elif 1272003396290740326 in vMembs:
             await inter.edit_original_response(content="I'm already in the VC!")
+            await asyncio.sleep(3)
+            await inter.delete_original_response()
     else:
         await inter.edit_original_response(content="You're not in a VC!")
+        await asyncio.sleep(3)
+        await inter.delete_original_response()
     
 
 @tree.command(name="refresh", description="Resends the videoplayer embed")
@@ -585,8 +591,8 @@ async def resend(inter: Interaction):
                 await inter.response.send_message(embed=embed, view=serverDict[inter.user.guild.id]['vidPlayer'])
                 await inter.channel.delete_messages([delMessage])
                 for message in client.cached_messages[::-1]:
-                    if len(message.components) > 0 and serverDict[inter.user.guild.id]["vidPlayer"].interact is not None:
-                        serverDict[inter.user.guild.id]["vidPlayer"].interact.message = message
+                    if len(message.components) > 0:
+                        serverDict[inter.user.guild.id]["vidPlayer"].interact = inter
             else:
                 await inter.response.send_message("Nothing to Refresh!", delete_after=3)
         else:
@@ -694,7 +700,7 @@ async def throw(inter: Interaction):
 
 @tree.command(name="play_file", description="Play music from a file")
 async def playFile(inter: Interaction, file: Attachment):
-    if inter.guild.id == 727745299614793728:
+    # if inter.guild.id == 727745299614793728:
         if inter.guild.voice_client is not None:
             await inter.response.send_message("You cant use this command when I'm already in a VC!", delete_after=5)
         else:
@@ -710,8 +716,8 @@ async def playFile(inter: Interaction, file: Attachment):
                 await inter.response.send_message(embed=embed)
             else:
                 await inter.response.send_message(f"Invalid File!", delete_after=5)
-    else:
-        await inter.response.send_message(content="# YOU CANT USE THIS COMMAND IN THIS SERVER!\nhttps://tenor.com/view/wheeze-laugh-gif-14359545", delete_after=5)
+    # else:
+    #     await inter.response.send_message(content="# YOU CANT USE THIS COMMAND IN THIS SERVER!\nhttps://tenor.com/view/wheeze-laugh-gif-14359545", delete_after=5)
         
 
 @tree.command(name="thanos", description="Perfectly Balanced. As all things should be")
