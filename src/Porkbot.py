@@ -30,7 +30,7 @@ L = 15
 dogFile = File(f"../res/video/dog_go_boom.mp4", filename="dog.mp4")
 rock = File(f"../res/video/rock.mp4", filename="rock.mp4")
 nukeFile = File("../res/img/nuke.gif", filename="nuke.gif")
-cactusFile = File("../res/img/PocketCactus.mp4", filename="cactus.mp4")
+cactusFile = File("../res/video/PocketCactus.mp4", filename="cactus.mp4")
 
 
 class setList(list):
