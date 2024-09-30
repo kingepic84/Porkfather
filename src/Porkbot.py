@@ -30,6 +30,7 @@ L = 15
 dogFile = File(f"../res/video/dog_go_boom.mp4", filename="dog.mp4")
 rock = File(f"../res/video/rock.mp4", filename="rock.mp4")
 nukeFile = File("../res/img/nuke.gif", filename="nuke.gif")
+cactusFile = File("../res/img/PocketCactus.mp4", filename="cactus.mp4")
 
 
 class setList(list):
@@ -696,6 +697,12 @@ async def throw(inter: Interaction):
     else:
         await inter.response.send_message(content="# YOU CANT USE THIS COMMAND IN THIS SERVER!\nhttps://tenor.com/view/wheeze-laugh-gif-14359545", delete_after=5)
     
+@tree.command(name="cactus", description="Pocket Cactus!")
+async def cactus(inter: Interaction):
+    if inter.guild.id == 727745299614793728:
+        await inter.response.send_message(file=cactusFile)
+    else:
+        await inter.response.send_message(content="# YOU CANT USE THIS COMMAND IN THIS SERVER!\nhttps://tenor.com/view/wheeze-laugh-gif-14359545", delete_after=5)
         
 
 @tree.command(name="play_file", description="Play music from a file")
@@ -704,16 +711,16 @@ async def playFile(inter: Interaction, file: Attachment):
         if inter.guild.voice_client is not None:
             await inter.response.send_message("You cant use this command when I'm already in a VC!", delete_after=5)
         else:
-            channel = await inter.user.voice.channel.connect()
-            coro = disconnect(channel, inter)
-            url = file.url
             if file.filename[file.filename.rindex("."):] in [".mp4", ".mp3", ".wav", ".ogg", ".mov"]:
+                channel = await inter.user.voice.channel.connect()
+                coro = disconnect(channel, inter)
+                url = file.url
                 source = FFmpegPCMAudio(url, **FFMPEG_OPTIONS)
-                channel.play(source, after=lambda e: asyncio.run_coroutine_threadsafe(coro, client.loop))
                 embedDict = {"color":int("03ecfc", base=16), "title": "Now Playing:", "description": f"{file.filename[:file.filename.rindex('.')].replace('_', ' ')}"}
                 embed = Embed.from_dict(embedDict)
                 embed.set_thumbnail(url="https://cdn.discordapp.com/attachments/503080365787709442/1276994897341321419/Porkfather.png?ex=66cb8dac&is=66ca3c2c&hm=35e6d5d9dbca030104a25cac94292fa8ec35349f879a6728f270612b5810338a&")
                 await inter.response.send_message(embed=embed)
+                channel.play(source, after=lambda e: asyncio.run_coroutine_threadsafe(coro, client.loop))
             else:
                 await inter.response.send_message(f"Invalid File!", delete_after=5)
     # else:
@@ -763,7 +770,7 @@ async def bible(inter: Interaction):
     
 
 @tree.command(name="disconnect", description="Disconnects the bot from the voice chat")
-async def modDiconnect(inter: Interaction):
+async def modDisconnect(inter: Interaction):
     if gc.permissions_for(inter.channel, inter.user).move_members and len(client.voice_clients) > 0:
         await client.voice_clients[0].disconnect()
         await inter.response.send_message("Disconnected Successfully!", delete_after=5)
