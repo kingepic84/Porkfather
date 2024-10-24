@@ -538,7 +538,7 @@ async def genEmbed(data):
     if isinstance(data[1], str):
         embed.set_thumbnail(url=data[1])
     elif isinstance(data[1], File):
-        embed.set_thumbnail(url=f"attachmend://{data[1].filename}")
+        embed.set_thumbnail(url=f"attachment://{data[1].filename}")
     try:
         link = f"[{data[0]}]({data[3]})"
         volume = data[4]
