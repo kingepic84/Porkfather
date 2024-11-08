@@ -203,6 +203,13 @@ class Player(View):
 
     @button(emoji="↩", label="Add To Queue", row=2, custom_id="queue")
     async def addToQueue(self, inter: Interaction, button: Button):
+        """ _summary_
+
+        Args
+        -
+            inter (Interaction): _description_
+            button (Button): _description_
+        """
         if inter.user.voice is not None and inter.user.voice.channel.id == self.vc.channel.id:
             self.queueButton = button
             self.queueButton.disabled = True
@@ -634,7 +641,7 @@ async def dog(inter: Interaction):
 @tree.command(name="warn", description="warn people (the funny)")
 async def warn(inter: Interaction, user: Member, message: str):
     if inter.guild.id == 727745299614793728:
-        if inter.user.top_role.id in [732721267115032747, 1267870834416947262]:
+        if inter.user.top_role.id in [732721267115032747, 1267870834416947262, 1285065286890029160]:
             guild = client.get_guild(727745299614793728)
             channels = inter.guild.channels
             channelNames = [a.name for a in channels]
