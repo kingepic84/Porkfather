@@ -674,7 +674,7 @@ async def kicks(inter: Interaction):
 
 @tree.command(name="gedagedigedagedo", description="Funny Chicken Nugget")
 async def nugget(inter: Interaction):
-    if inter.guild.id == 727745299614793728:
+    if inter.guild.id == 727745299614793728 or inter.guild.id == 1079211357674680450:
         if inter.guild.voice_client is not None:
             await inter.response.send_message("I'm already in a VC!", delete_after=5)
         channel = await inter.user.voice.channel.connect()
