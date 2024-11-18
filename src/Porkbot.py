@@ -686,7 +686,7 @@ async def nugget(inter: Interaction):
 
 @tree.command(name="gedagedigedagedo_anime", description="Funny Chicken Nugget but Blue Archive Flavored")
 async def blueArchive(inter: Interaction):
-    if inter.guild.id == 727745299614793728:
+    if inter.guild.id == 727745299614793728 or inter.guild.id == 1079211357674680450:
         if inter.guild.voice_client is not None:
             await inter.response.send_message("I'm already in a VC!", delete_after=5)
         channel = await inter.user.voice.channel.connect()
