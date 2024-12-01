@@ -185,12 +185,12 @@ class Player(View):
         self.vc = vc
         self.volume = 1.0
         self.paused = False
-        self.interact = None
         self.currembed = currEmbed
         self.dead = False
         self.loopOne = loopOne
         super().__init__(timeout=timeout)
         self.queue = []
+        self.interact: Interaction = None
         self.looping = loop
         self.queueButton = None
         self.first = True
@@ -203,13 +203,14 @@ class Player(View):
 
     @button(emoji="↩", label="Add To Queue", row=2, custom_id="queue")
     async def addToQueue(self, inter: Interaction, button: Button):
-        """ _summary_
+        """ Adds a song to the song queue. 
 
         Args
         -
-            inter (Interaction): _description_
-            button (Button): _description_
+            inter (Interaction): The interaction for this song.
+            button (Button): The button. 
         """
+        self.interact = inter
         if inter.user.voice is not None and inter.user.voice.channel.id == self.vc.channel.id:
             self.queueButton = button
             self.queueButton.disabled = True
@@ -247,7 +248,6 @@ class Player(View):
                     else: timeString = "N/A"
                     serverDict[inter.user.guild.id]['title_queue'].append((title, False, False, timeString))
                 if not self.vc.is_playing() and not self.paused:
-                    self.interact = inter
                     await self.goNext()
                 else:
                     self.queueButton.disabled = False
@@ -263,7 +263,6 @@ class Player(View):
                 await inter.edit_original_response(embed=await genEmbed([f"{title} has been Added to Queue", thumb, "Loading Video...", "Volume N/A"]))
                 await asyncio.sleep(1)
                 if not self.vc.is_playing() and not self.paused:
-                    self.interact = inter
                     await self.goNext()
                 else:
                     self.queueButton.disabled = False
@@ -271,9 +270,9 @@ class Player(View):
         else:
             await inter.response.send_message("CANT CLICK THE BUTTONS IF YOU'RE NOT IN A VC", ephemeral=True)
 
-    async def playNext(self, inter: Interaction, fromSkip: bool = False):
+    async def playNext(self, fromSkip: bool = False):
         if not fromSkip:
-            await inter.message.edit(embed=await genEmbed(["Grabbing Latest Video From Queue...", "https://cdn.discordapp.com/attachments/1141543952667906068/1276994311405178980/loading7_green.gif?ex=66cb8d21&is=66ca3ba1&hm=33cb6402ea6490830ffa7cbc76f51dfe7a86573ed43337540fd1f99a96bd2ea5&", "Loading Video...", "Volume N/A"]))
+            await self.interact.message.edit(embed=await genEmbed(["Grabbing Latest Video From Queue...", "https://cdn.discordapp.com/attachments/1141543952667906068/1276994311405178980/loading7_green.gif?ex=66cb8d21&is=66ca3ba1&hm=33cb6402ea6490830ffa7cbc76f51dfe7a86573ed43337540fd1f99a96bd2ea5&", "Loading Video...", "Volume N/A"]))
         with yt_dlp.YoutubeDL(self.ydl_opts) as ydl:
             info = ydl.extract_info(self.url, download=False)
             url2 = info['url']
@@ -284,7 +283,7 @@ class Player(View):
             self.currembed = await genEmbed([title, thumbnail, duration, link, int(float(self.volume)*100)])
             if self.queueButton is not None:
                 self.queueButton.disabled = False
-            await inter.message.edit(embed=self.currembed, view=self)
+            await self.interact.message.edit(embed=self.currembed, view=self)
             source = FFmpegPCMAudio(url2, **self.FFMPEG_OPTIONS)
             if not self.vc.is_playing():
                 self.vc.play(source, after=self.afterFunc)
@@ -294,7 +293,6 @@ class Player(View):
         try:
             if len(serverDict[self.interact.user.guild.id]['title_queue']) > 0:
                 self.songHist.append((self.url, serverDict[self.interact.user.guild.id]['title_queue'][0]))
-                print(self.songHist.lst)
             coro = self.goNext()
             fut = asyncio.run_coroutine_threadsafe(coro, client.loop)
             fut.result()
@@ -325,7 +323,7 @@ class Player(View):
                     pass
                 if self.vc.source is not None:
                     self.vc.source.cleanup()
-                await self.playNext(self.interact, False)
+                await self.playNext(False)
             elif self.prev and not self.loopOne:
                 if len(self.songHist.lst) == 1:
                     self.songHist.append((self.url, serverDict[self.interact.user.guild.id]['title_queue'][0]))
@@ -343,11 +341,11 @@ class Player(View):
                 if self.vc.source is not None:
                     self.vc.source.cleanup()
                 self.url = self.queue.pop(0)
-                await self.playNext(self.interact, False)
+                await self.playNext(False)
             else:
                 if self.vc.source is not None:
                     self.vc.source.cleanup()
-                await self.playNext(self.interact, False)
+                await self.playNext(False)
         except IndexError:
             serverDict[self.interact.user.guild.id]['title_queue'].clear()
             self.first = True
@@ -383,7 +381,6 @@ class Player(View):
                 else:
                     await inter.response.send_message("Queue is Empty!", delete_after=2)
             else:
-                print(self.songHist.lst)
                 await inter.response.send_message("There are no songs to go back to!", delete_after=2)
         else:
             await inter.response.send_message("CANT CLICK THE BUTTONS IF YOU'RE NOT IN A VC", ephemeral=True)
@@ -428,7 +425,7 @@ class Player(View):
                 self.songHist.clear()
                 if self.vc.is_playing():
                     self.vc.stop()
-                    await self.interact.message.edit(embed=await genEmbed(["Queue is Empty!", "https://cdn.discordapp.com/attachments/503080365787709442/1276994897341321419/Porkfather.png?ex=66cb8dac&is=66ca3c2c&hm=35e6d5d9dbca030104a25cac94292fa8ec35349f879a6728f270612b5810338a&", "No Video Loaded", "Volume N/A"]))
+                    await inter.message.edit(embed=await genEmbed(["Queue is Empty!", "https://cdn.discordapp.com/attachments/503080365787709442/1276994897341321419/Porkfather.png?ex=66cb8dac&is=66ca3c2c&hm=35e6d5d9dbca030104a25cac94292fa8ec35349f879a6728f270612b5810338a&", "No Video Loaded", "Volume N/A"]))
                 if self.looping:
                     self.looping = False
                 if self.loopOne:
@@ -595,12 +592,18 @@ async def resend(inter: Interaction):
                 if len(message.components) > 0 and len(message.components[0].children) == 5:
                     embed = message.embeds[0]
                     delMessage = message
+                    break
             if embed is not None:
+                msgs = client.cached_messages[::-1]
+                msgs = msgs[msgs.index(delMessage):]
                 await inter.response.send_message(embed=embed, view=serverDict[inter.user.guild.id]['vidPlayer'])
-                await inter.channel.delete_messages([delMessage])
-                for message in client.cached_messages[::-1]:
+                for message in msgs:
                     if len(message.components) > 0:
                         serverDict[inter.user.guild.id]["vidPlayer"].interact = inter
+                        origMsg = await inter.original_response()
+                        serverDict[inter.user.guild.id]["vidPlayer"].interact.message = origMsg
+                        await inter.channel.delete_messages([delMessage])
+                        break
             else:
                 await inter.response.send_message("Nothing to Refresh!", delete_after=3)
         else:
