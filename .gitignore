@@ -1,3 +1,6 @@
 *.py
+*.js
 *.txt
 web/*
+discord-protos/*
+protos
