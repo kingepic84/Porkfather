@@ -12,6 +12,7 @@ from discord import (Attachment, AudioSource, ButtonStyle, Embed,
                      FFmpegPCMAudio, File, Interaction, Member,
                      PCMVolumeTransformer, PermissionOverwrite, VoiceClient,
                      app_commands)
+from discord.ext import tasks
 from discord.abc import GuildChannel as gc
 from discord.ui import Button, Modal, TextInput, View, button
 
@@ -32,6 +33,12 @@ rock = File(f"../res/video/rock.mp4", filename="rock.mp4")
 nukeFile = File("../res/img/nuke.gif", filename="nuke.gif")
 cactusFile = File("../res/video/PocketCactus.mp4", filename="cactus.mp4")
 
+@tasks.loop(minutes=1)
+async def waitfordisconnect():
+    if len(client.voice_clients) > 0 and 503067386115653683 in serverDict:
+        vMembs = [member.id for member in serverDict[503067386115653683]["vidPlayer"].vc.channel.members]
+        if len(vMembs) == 1 and vMembs[0] == 941497960561246278:
+            await client.voice_clients[0].disconnect()
 
 class setList(list):
     def __init__(self): self.lst = []
@@ -558,6 +565,7 @@ async def genEmbed(data):
 @client.event
 async def on_ready():
     await tree.sync(guild=guild)
+    await waitfordisconnect.start()
     print(f'Logged in as {client.user} (ID: {client.user.id})')
     print('------')
 
@@ -581,7 +589,9 @@ async def vplayer(inter: Interaction):
         await inter.edit_original_response(content="You're not in a VC!")
         await asyncio.sleep(3)
         await inter.delete_original_response()
-    
+
+
+
 
 @tree.command(name="refresh", description="Resends the videoplayer embed")
 async def resend(inter: Interaction):
