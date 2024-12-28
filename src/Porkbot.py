@@ -33,7 +33,7 @@ rock = File(f"../res/video/rock.mp4", filename="rock.mp4")
 nukeFile = File("../res/img/nuke.gif", filename="nuke.gif")
 cactusFile = File("../res/video/PocketCactus.mp4", filename="cactus.mp4")
 
-@tasks.loop(minutes=1)
+@tasks.loop(minutes=30)
 async def waitfordisconnect():
     if len(client.voice_clients) > 0 and 503067386115653683 in serverDict:
         vMembs = [member.id for member in serverDict[503067386115653683]["vidPlayer"].vc.channel.members]
