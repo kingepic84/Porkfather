@@ -654,7 +654,7 @@ async def dog(inter: Interaction):
 @tree.command(name="warn", description="warn people (the funny)")
 async def warn(inter: Interaction, user: Member, message: str):
     # if inter.guild.id == 727745299614793728:
-        if inter.user.top_role.id in [732721267115032747, 1267870834416947262, 1285065286890029160]:
+        if inter.user.top_role.id in [732721267115032747, 1267870834416947262, 1285065286890029160, 1335518695052546109]:
             guild = client.get_guild(727745299614793728)
             channels = inter.guild.channels
             channelNames = [a.name for a in channels]
