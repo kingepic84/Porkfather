@@ -23,7 +23,7 @@ guild = client.get_guild(727745299614793728)
 tree = app_commands.CommandTree(client)
 loop = False
 loopOne = False
-pattern = re.compile(r'^https:\/\/(www\.)?(youtube\.com\/(watch\?v=|shorts\/)|youtu\.be\/)[^\s\/$.?#].[^\s]*$')
+pattern = re.compile(r'^https:\/\/(www\.)?(youtube\.com\/(watch\?v=[^\s&]+(&list=[^\s&]+)?|playlist\?list=[^\s&]+)|youtu\.be\/[^\s]+)$')
 vc = None
 currEmbed = None
 serverDict: dict[int, dict[View, list]] = {}
