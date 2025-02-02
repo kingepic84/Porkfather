@@ -624,37 +624,37 @@ async def resend(inter: Interaction):
 
 @tree.command(name="mycommand", description="Hi!")
 async def hello(interaction: Interaction):
-    # if interaction.guild.id == 727745299614793728:
+    if interaction.guild.id == 727745299614793728:
         await interaction.response.send_message(content="Hello World!")
-    # else:
-        # await interaction.response.send_message(content="# YOU CANT USE THIS COMMAND IN THIS SERVER!\nhttps://tenor.com/view/wheeze-laugh-gif-14359545", delete_after=5)
+    else:
+        await interaction.response.send_message(content="# YOU CANT USE THIS COMMAND IN THIS SERVER!\nhttps://tenor.com/view/wheeze-laugh-gif-14359545", delete_after=5)
         
 
 @tree.command(name="nuke", description="Nukes the Server")
 async def nuke(inter: Interaction):
-    # if inter.guild.id == 727745299614793728:
+    if inter.guild.id == 727745299614793728:
         colors = "123456789abcdef"
         color = "".join(choices(colors, k=6))
         embedContent = {"color": int(color, base=16),"title": "BOOOOOOOOOOOOOOOOOOOOOOOOOOOM!!!!!"}
         embed = Embed.from_dict(embedContent)
         embed.set_image(url=f"attachment://{nukeFile.filename}")
         await inter.response.send_message(embed=embed, file=nukeFile)
-    # else:
-        # await inter.response.send_message(content="# YOU CANT USE THIS COMMAND IN THIS SERVER!\nhttps://tenor.com/view/wheeze-laugh-gif-14359545", delete_after=5)
+    else:
+        await inter.response.send_message(content="# YOU CANT USE THIS COMMAND IN THIS SERVER!\nhttps://tenor.com/view/wheeze-laugh-gif-14359545", delete_after=5)
 
 
 @tree.command(name="dog", description="Dog go boom")
 async def dog(inter: Interaction):
-    # if inter.guild.id == 727745299614793728:
+    if inter.guild.id == 727745299614793728:
         await inter.response.send_message(file=dogFile)
-    # else:
-        # await inter.response.send_message(content="# YOU CANT USE THIS COMMAND IN THIS SERVER!\nhttps://tenor.com/view/wheeze-laugh-gif-14359545", delete_after=5)
+    else:
+        await inter.response.send_message(content="# YOU CANT USE THIS COMMAND IN THIS SERVER!\nhttps://tenor.com/view/wheeze-laugh-gif-14359545", delete_after=5)
 
 
 @tree.command(name="warn", description="warn people (the funny)")
 async def warn(inter: Interaction, user: Member, message: str):
-    # if inter.guild.id == 727745299614793728:
-        if inter.user.top_role.id in [732721267115032747, 1267870834416947262, 1285065286890029160, 1335518695052546109]:
+    if inter.guild.id == 727745299614793728:
+        if inter.user.top_role.id in [732721267115032747, 1267870834416947262, 1285065286890029160]:
             guild = client.get_guild(727745299614793728)
             channels = inter.guild.channels
             channelNames = [a.name for a in channels]
@@ -668,61 +668,61 @@ async def warn(inter: Interaction, user: Member, message: str):
             await channel.delete()
         else:
             await inter.response.send_message("YOU CANT USE THIS COMMAND!!! CRY ABOUT IT!!!!", ephemeral=True)
-    # else:
-        # await inter.response.send_message(content="# YOU CANT USE THIS COMMAND IN THIS SERVER!\nhttps://tenor.com/view/wheeze-laugh-gif-14359545", delete_after=5)
+    else:
+        await inter.response.send_message(content="# YOU CANT USE THIS COMMAND IN THIS SERVER!\nhttps://tenor.com/view/wheeze-laugh-gif-14359545", delete_after=5)
 
 
 @tree.command(name="kicks", description="Pumped Up fr fr")
 async def kicks(inter: Interaction):
-    # if inter.guild.id == 727745299614793728:
+    if inter.guild.id == 727745299614793728:
         if inter.guild.voice_client is not None:
             await inter.response.send_message("I'm already in a VC!", delete_after=5)
         channel = await inter.user.voice.channel.connect()
         coro = disconnect(channel)
         channel.play(FFmpegPCMAudio("../res/audio/ALDIODER KIDS.mp3"), after=lambda e: asyncio.run_coroutine_threadsafe(coro, client.loop))
         await inter.response.send_message("ALDIODER KIDS", delete_after=5)
-    # else:
-        # await inter.response.send_message(content="# YOU CANT USE THIS COMMAND IN THIS SERVER!\nhttps://tenor.com/view/wheeze-laugh-gif-14359545", delete_after=5)
+    else:
+        await inter.response.send_message(content="# YOU CANT USE THIS COMMAND IN THIS SERVER!\nhttps://tenor.com/view/wheeze-laugh-gif-14359545", delete_after=5)
 
 
 @tree.command(name="gedagedigedagedo", description="Funny Chicken Nugget")
 async def nugget(inter: Interaction):
-    # if inter.guild.id == 727745299614793728 or inter.guild.id == 1079211357674680450:
+    if inter.guild.id == 727745299614793728 or inter.guild.id == 1079211357674680450:
         if inter.guild.voice_client is not None:
             await inter.response.send_message("I'm already in a VC!", delete_after=5)
         channel = await inter.user.voice.channel.connect()
         coro = disconnect(channel)
         channel.play(FFmpegPCMAudio("../res/audio/gedagedigedagedago.mp3"), after=lambda e: asyncio.run_coroutine_threadsafe(coro, client.loop))
         await inter.response.send_message("Gedagedigedagedo".upper(), delete_after=5)
-    # else:
-        # await inter.response.send_message(content="# YOU CANT USE THIS COMMAND IN THIS SERVER!\nhttps://tenor.com/view/wheeze-laugh-gif-14359545", delete_after=5)
+    else:
+        await inter.response.send_message(content="# YOU CANT USE THIS COMMAND IN THIS SERVER!\nhttps://tenor.com/view/wheeze-laugh-gif-14359545", delete_after=5)
 
 @tree.command(name="gedagedigedagedo_anime", description="Funny Chicken Nugget but Blue Archive Flavored")
 async def blueArchive(inter: Interaction):
-    # if inter.guild.id == 727745299614793728 or inter.guild.id == 1079211357674680450:
+    if inter.guild.id == 727745299614793728 or inter.guild.id == 1079211357674680450:
         if inter.guild.voice_client is not None:
             await inter.response.send_message("I'm already in a VC!", delete_after=5)
         channel = await inter.user.voice.channel.connect()
         coro = disconnect(channel)
         channel.play(FFmpegPCMAudio("../res/video/Gedagedigedagedo.mp4"), after=lambda e: asyncio.run_coroutine_threadsafe(coro, client.loop))
         await inter.response.send_message("Gedagedigedagedo".upper(), delete_after=5)
-    # else:
-        # await inter.response.send_message(content="# YOU CANT USE THIS COMMAND IN THIS SERVER!\nhttps://tenor.com/view/wheeze-laugh-gif-14359545", delete_after=5)
+    else:
+        await inter.response.send_message(content="# YOU CANT USE THIS COMMAND IN THIS SERVER!\nhttps://tenor.com/view/wheeze-laugh-gif-14359545", delete_after=5)
 
 
 @tree.command(name="rock", description="Throws a Rock")
 async def throw(inter: Interaction):
-    # if inter.guild.id == 727745299614793728:
+    if inter.guild.id == 727745299614793728:
         await inter.response.send_message(file=rock)
-    # else:
-        # await inter.response.send_message(content="# YOU CANT USE THIS COMMAND IN THIS SERVER!\nhttps://tenor.com/view/wheeze-laugh-gif-14359545", delete_after=5)
+    else:
+        await inter.response.send_message(content="# YOU CANT USE THIS COMMAND IN THIS SERVER!\nhttps://tenor.com/view/wheeze-laugh-gif-14359545", delete_after=5)
     
 @tree.command(name="cactus", description="Pocket Cactus!")
 async def cactus(inter: Interaction):
-    # if inter.guild.id == 727745299614793728:
+    if inter.guild.id == 727745299614793728:
         await inter.response.send_message(file=cactusFile)
-    # else:
-        # await inter.response.send_message(content="# YOU CANT USE THIS COMMAND IN THIS SERVER!\nhttps://tenor.com/view/wheeze-laugh-gif-14359545", delete_after=5)
+    else:
+        await inter.response.send_message(content="# YOU CANT USE THIS COMMAND IN THIS SERVER!\nhttps://tenor.com/view/wheeze-laugh-gif-14359545", delete_after=5)
         
 
 @tree.command(name="play_file", description="Play music from a file")
@@ -783,10 +783,10 @@ async def thanos(inter: Interaction):
 
 @tree.command(name="bible", description="The Bald Bible")
 async def bible(inter: Interaction):
-    # if inter.guild.id == 727745299614793728:
+    if inter.guild.id == 727745299614793728:
         await inter.response.send_message(content="https://tenor.com/view/tf2-bald-engineer-bec-2fort-gif-22082556")
-    # else:
-        # await inter.response.send_message(content="# YOU CANT USE THIS COMMAND IN THIS SERVER!\nhttps://tenor.com/view/wheeze-laugh-gif-14359545", delete_after=5)
+    else:
+        await inter.response.send_message(content="# YOU CANT USE THIS COMMAND IN THIS SERVER!\nhttps://tenor.com/view/wheeze-laugh-gif-14359545", delete_after=5)
     
 
 @tree.command(name="disconnect", description="Disconnects the bot from the voice chat")
