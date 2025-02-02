@@ -653,7 +653,7 @@ async def dog(inter: Interaction):
 
 @tree.command(name="warn", description="warn people (the funny)")
 async def warn(inter: Interaction, user: Member, message: str):
-    if inter.guild.id == 727745299614793728:
+    # if inter.guild.id == 727745299614793728:
         if inter.user.top_role.id in [732721267115032747, 1267870834416947262, 1285065286890029160]:
             guild = client.get_guild(727745299614793728)
             channels = inter.guild.channels
@@ -668,8 +668,8 @@ async def warn(inter: Interaction, user: Member, message: str):
             await channel.delete()
         else:
             await inter.response.send_message("YOU CANT USE THIS COMMAND!!! CRY ABOUT IT!!!!", ephemeral=True)
-    else:
-        await inter.response.send_message(content="# YOU CANT USE THIS COMMAND IN THIS SERVER!\nhttps://tenor.com/view/wheeze-laugh-gif-14359545", delete_after=5)
+    # else:
+        # await inter.response.send_message(content="# YOU CANT USE THIS COMMAND IN THIS SERVER!\nhttps://tenor.com/view/wheeze-laugh-gif-14359545", delete_after=5)
 
 
 @tree.command(name="kicks", description="Pumped Up fr fr")
