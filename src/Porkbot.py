@@ -3,7 +3,7 @@ import audioop
 import json
 import os
 import re
-from random import choices, shuffle
+from random import choices, shuffle, sample
 from typing import Callable, Optional, SupportsIndex
 
 import discord
@@ -745,7 +745,47 @@ async def playFile(inter: Interaction, file: Attachment):
                 await inter.response.send_message(f"Invalid File!", delete_after=5)
     # else:
     #     await inter.response.send_message(content="# YOU CANT USE THIS COMMAND IN THIS SERVER!\nhttps://tenor.com/view/wheeze-laugh-gif-14359545", delete_after=5)
-        
+
+@tree.command(name="minesweeper", description="A simple game of minesweeper")
+async def minesweeper(inter: Interaction, rows=9, columns=9, bombs=10):
+    board = [[0 for _ in range(columns)] for _ in range(rows)]
+    all_positions = [(r, c) for r in range(rows) for c in range(columns)]
+    bomb_positions = sample(all_positions, bombs)
+    for r, c in bomb_positions:
+        board[r][c] = '*'
+    for r in range(rows):
+        for c in range(columns):
+            if board[r][c] == '*':
+                continue 
+            count = 0
+            for i in range(max(0, r - 1), min(rows, r + 2)):
+                for j in range(max(0, c - 1), min(columns, c + 2)):
+                    if board[i][j] == '*':
+                        count += 1
+            board[r][c] = count
+    number_emojis = {
+        1: "||1️⃣||",
+        2: "||2️⃣||",
+        3: "||3️⃣||",
+        4: "||4️⃣||",
+        5: "||5️⃣||",
+        6: "||6️⃣||",
+        7: "||7️⃣||",
+        8: "||8️⃣||"
+    }
+    board_str_lines = []
+    for r in range(rows):
+        line = []
+        for c in range(columns):
+            cell = board[r][c]
+            if cell == '*':
+                line.append("||💣||")
+            elif cell == 0:
+                line.append("||      ||")
+            else:
+                line.append(number_emojis[cell])
+        board_str_lines.append(" ".join(line))
+    await inter.response.send_message(embed=Embed(color=int("03ecfc", base=16), title="Minesweeper!", description="\n".join(board_str_lines)))    
 
 @tree.command(name="thanos", description="Perfectly Balanced. As all things should be")
 async def thanos(inter: Interaction):
