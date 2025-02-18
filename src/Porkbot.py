@@ -781,7 +781,7 @@ async def minesweeper(inter: Interaction, rows: int = 9, columns: int = 9, bombs
             if cell == '*':
                 line.append("||💣||")
             elif cell == 0:
-                line.append("||      ||")
+                line.append("||🟩||")
             else:
                 line.append(number_emojis[cell])
         board_str_lines.append(" ".join(line))
