@@ -747,7 +747,7 @@ async def playFile(inter: Interaction, file: Attachment):
     #     await inter.response.send_message(content="# YOU CANT USE THIS COMMAND IN THIS SERVER!\nhttps://tenor.com/view/wheeze-laugh-gif-14359545", delete_after=5)
 
 @tree.command(name="minesweeper", description="A simple game of minesweeper")
-async def minesweeper(inter: Interaction, rows=9, columns=9, bombs=10):
+async def minesweeper(inter: Interaction, rows: int = 9, columns: int = 9, bombs: int = 10):
     board = [[0 for _ in range(columns)] for _ in range(rows)]
     all_positions = [(r, c) for r in range(rows) for c in range(columns)]
     bomb_positions = sample(all_positions, bombs)
