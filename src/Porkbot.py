@@ -799,12 +799,15 @@ async def minesweeper(inter: Interaction, rows: int = 9, columns: int = 9, bombs
             if cell == '*':
                 line.append("||💣||")
             elif cell == 0:
-                line.append("||🟩||")  # Blank for 0 adjacent bombs.
+                line.append("||      ||")  # Blank for 0 adjacent bombs.
             else:
                 line.append(number_emojis[cell])
         board_lines.append(" ".join(line))
+    print(len(board_lines), len(board_lines[0]))
+    print(json.dumps(board_lines, indent=4))
     finalBoard = "# Minesweeper!\n" + "\n".join(board_lines)
-    await inter.response.send_message(content=finalBoard)    
+    print(finalBoard)
+    await inter.response.send_message(content=finalBoard)
 
 @tree.command(name="thanos", description="Perfectly Balanced. As all things should be")
 async def thanos(inter: Interaction):
