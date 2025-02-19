@@ -803,8 +803,8 @@ async def minesweeper(inter: Interaction, rows: int = 9, columns: int = 9, bombs
             else:
                 line.append(number_emojis[cell])
         board_lines.append(" ".join(line))
-    finalBoard = "\n".join(board_lines)
-    await inter.response.send_message(embed=Embed(color=int("03ecfc", base=16), title="Minesweeper!", description=finalBoard))    
+    finalBoard = "# Minesweeper!\n" + "\n".join(board_lines)
+    await inter.response.send_message(content=finalBoard)    
 
 @tree.command(name="thanos", description="Perfectly Balanced. As all things should be")
 async def thanos(inter: Interaction):
