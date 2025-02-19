@@ -3,7 +3,7 @@ import audioop
 import json
 import os
 import re
-from random import choices, shuffle, sample
+from random import choices, shuffle, choice
 from typing import Callable, Optional, SupportsIndex
 
 import discord
@@ -749,20 +749,37 @@ async def playFile(inter: Interaction, file: Attachment):
 @tree.command(name="minesweeper", description="A simple game of minesweeper")
 async def minesweeper(inter: Interaction, rows: int = 9, columns: int = 9, bombs: int = 10):
     board = [[0 for _ in range(columns)] for _ in range(rows)]
-    all_positions = [(r, c) for r in range(rows) for c in range(columns)]
-    bomb_positions = sample(all_positions, bombs)
+    candidates = {(r, c) for r in range(rows) for c in range(columns)}
+    bomb_positions = []
+    
+    while len(bomb_positions) < bombs:
+        if not candidates:
+            raise ValueError("Cannot place all bombs with the given constraints.")
+        
+        pos = choice(list(candidates))
+        bomb_positions.append(pos)
+        
+        candidates.remove(pos)
+        
+        for dr, dc in [(-1, 0), (1, 0), (0, -1), (0, 1)]:
+            neighbor = (pos[0] + dr, pos[1] + dc)
+            if neighbor in candidates:
+                candidates.remove(neighbor)
+    
     for r, c in bomb_positions:
         board[r][c] = '*'
+    
     for r in range(rows):
         for c in range(columns):
             if board[r][c] == '*':
-                continue 
+                continue
             count = 0
             for i in range(max(0, r - 1), min(rows, r + 2)):
                 for j in range(max(0, c - 1), min(columns, c + 2)):
                     if board[i][j] == '*':
                         count += 1
             board[r][c] = count
+    
     number_emojis = {
         1: "||1️⃣||",
         2: "||2️⃣||",
@@ -773,7 +790,8 @@ async def minesweeper(inter: Interaction, rows: int = 9, columns: int = 9, bombs
         7: "||7️⃣||",
         8: "||8️⃣||"
     }
-    board_str_lines = []
+    
+    board_lines = []
     for r in range(rows):
         line = []
         for c in range(columns):
@@ -781,12 +799,11 @@ async def minesweeper(inter: Interaction, rows: int = 9, columns: int = 9, bombs
             if cell == '*':
                 line.append("||💣||")
             elif cell == 0:
-                line.append("||🟩||")
+                line.append("||🟩||")  # Blank for 0 adjacent bombs.
             else:
                 line.append(number_emojis[cell])
-        board_str_lines.append(" ".join(line))
-    finalBoard = "\n".join(board_str_lines)
-    print(finalBoard)
+        board_lines.append(" ".join(line))
+    finalBoard = "\n".join(board_lines)
     await inter.response.send_message(embed=Embed(color=int("03ecfc", base=16), title="Minesweeper!", description=finalBoard))    
 
 @tree.command(name="thanos", description="Perfectly Balanced. As all things should be")
