@@ -633,7 +633,7 @@ async def hello(interaction: Interaction):
 
 @tree.command(name="nuke", description="Nukes the Server")
 async def nuke(inter: Interaction):
-    if inter.guild.id == 727745299614793728 or enable:
+    if (inter.guild is not None and inter.guild.id == 727745299614793728) or enable:
         colors = "123456789abcdef"
         color = "".join(choices(colors, k=6))
         embedContent = {"color": int(color, base=16),"title": "BOOOOOOOOOOOOOOOOOOOOOOOOOOOM!!!!!"}
@@ -646,7 +646,7 @@ async def nuke(inter: Interaction):
 
 @tree.command(name="dog", description="Dog go boom")
 async def dog(inter: Interaction):
-    if inter.guild.id == 727745299614793728 or enable:
+    if (inter.guild is not None and inter.guild.id == 727745299614793728) or enable:
         await inter.response.send_message(file=dogFile)
     else:
         await inter.response.send_message(content="# YOU CANT USE THIS COMMAND IN THIS SERVER!\nhttps://tenor.com/view/wheeze-laugh-gif-14359545", delete_after=5)
@@ -654,7 +654,7 @@ async def dog(inter: Interaction):
 
 @tree.command(name="warn", description="warn people (the funny)")
 async def warn(inter: Interaction, user: Member, message: str):
-    if inter.guild.id == 727745299614793728 or enable:
+    if (inter.guild is not None and inter.guild.id == 727745299614793728) or enable:
         if inter.user.top_role.id in [732721267115032747, 1267870834416947262, 1285065286890029160]:
             guild = client.get_guild(727745299614793728)
             channels = inter.guild.channels
@@ -675,7 +675,7 @@ async def warn(inter: Interaction, user: Member, message: str):
 
 @tree.command(name="kicks", description="Pumped Up fr fr")
 async def kicks(inter: Interaction):
-    if inter.guild.id == 727745299614793728 or enable:
+    if (inter.guild is not None and inter.guild.id == 727745299614793728) or enable:
         if inter.guild.voice_client is not None:
             await inter.response.send_message("I'm already in a VC!", delete_after=5)
         channel = await inter.user.voice.channel.connect()
@@ -688,7 +688,7 @@ async def kicks(inter: Interaction):
 
 @tree.command(name="gedagedigedagedo", description="Funny Chicken Nugget")
 async def nugget(inter: Interaction):
-    if inter.guild.id == 727745299614793728 or inter.guild.id == 1079211357674680450 or enable:
+    if (inter.guild is not None and inter.guild.id == 727745299614793728 or inter.guild.id == 1079211357674680450) or enable:
         if inter.guild.voice_client is not None:
             await inter.response.send_message("I'm already in a VC!", delete_after=5)
         channel = await inter.user.voice.channel.connect()
@@ -700,7 +700,7 @@ async def nugget(inter: Interaction):
 
 @tree.command(name="gedagedigedagedo_anime", description="Funny Chicken Nugget but Blue Archive Flavored")
 async def blueArchive(inter: Interaction):
-    if inter.guild.id == 727745299614793728 or inter.guild.id == 1079211357674680450 or enable:
+    if (inter.guild is not None and inter.guild.id == 727745299614793728 or inter.guild.id == 1079211357674680450) or enable:
         if inter.guild.voice_client is not None:
             await inter.response.send_message("I'm already in a VC!", delete_after=5)
         channel = await inter.user.voice.channel.connect()
@@ -713,14 +713,14 @@ async def blueArchive(inter: Interaction):
 
 @tree.command(name="rock", description="Throws a Rock")
 async def throw(inter: Interaction):
-    if inter.guild.id == 727745299614793728 or enable:
+    if (inter.guild is not None and inter.guild.id == 727745299614793728) or enable:
         await inter.response.send_message(file=rock)
     else:
         await inter.response.send_message(content="# YOU CANT USE THIS COMMAND IN THIS SERVER!\nhttps://tenor.com/view/wheeze-laugh-gif-14359545", delete_after=5)
     
 @tree.command(name="cactus", description="Pocket Cactus!")
 async def cactus(inter: Interaction):
-    if inter.guild.id == 727745299614793728 or enable:
+    if (inter.guild is not None and inter.guild.id == 727745299614793728) or enable:
         await inter.response.send_message(file=cactusFile)
     else:
         await inter.response.send_message(content="# YOU CANT USE THIS COMMAND IN THIS SERVER!\nhttps://tenor.com/view/wheeze-laugh-gif-14359545", delete_after=5)
@@ -809,7 +809,7 @@ async def minesweeper(inter: Interaction, rows: int = 9, columns: int = 9, bombs
 
 @tree.command(name="thanos", description="Perfectly Balanced. As all things should be")
 async def thanos(inter: Interaction):
-    if inter.guild.id == 727745299614793728 or enable:
+    if (inter.guild is not None and inter.guild.id == 727745299614793728) or enable:
         if inter.user.id == 727609947470299257:
             membs = list(inter.guild.members)
             shuffle(membs)
@@ -843,7 +843,7 @@ async def thanos(inter: Interaction):
 
 @tree.command(name="bible", description="The Bald Bible")
 async def bible(inter: Interaction):
-    if inter.guild.id == 727745299614793728 or enable:
+    if (inter.guild is not None and inter.guild.id == 727745299614793728) or enable:
         await inter.response.send_message(content="https://tenor.com/view/tf2-bald-engineer-bec-2fort-gif-22082556")
     else:
         await inter.response.send_message(content="# YOU CANT USE THIS COMMAND IN THIS SERVER!\nhttps://tenor.com/view/wheeze-laugh-gif-14359545", delete_after=5)
