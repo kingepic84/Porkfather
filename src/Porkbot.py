@@ -247,14 +247,14 @@ class Player(View):
                     title = entry["title"]
                     time = entry["duration"]
                     if time is not None:
-                        hours = time//3600
-                        self.totalHours+=hours
-                        time-=(hours*3600)
-                        minutes = time//60
-                        self.totalMinutes+=minutes
-                        time-=(minutes*60)
+                        # hours = time//3600
+                        # self.totalHours+=hours
+                        # time-=(hours*3600)
+                        # minutes = time//60
+                        # self.totalMinutes+=minutes
+                        # time-=(minutes*60)
                         self.totalSeconds+=time
-                        timeString = f"{str(int(hours))+':' if int(hours) > 0 else ''}{str(int(minutes))+':' if int(minutes) > 0 else '0:'}{'0'+str(int(time)) if int(time) < 10 else str(int(time))}"
+                        timeString = await formatTime(time)
                     else: timeString = "N/A"
                     serverDict[inter.user.guild.id]['title_queue'].append((title, False, False, timeString))
                 if not self.vc.is_playing() and not self.paused:
@@ -268,15 +268,7 @@ class Player(View):
                     info = ydl.extract_info(linkModal.url, download=False)
                     title = info["title"]
                     time = info["duration_string"]
-                    timeNum = info["duration"]
-                    if timeNum is not None:
-                        hours = timeNum//3600
-                        self.totalHours+=hours
-                        timeNum-=(hours*3600)
-                        minutes = timeNum//60
-                        self.totalMinutes+=minutes
-                        timeNum-=(minutes*60)
-                        self.totalSeconds+=timeNum
+                    self.totalSeconds += info["duration"]
                     serverDict[inter.user.guild.id]['title_queue'].append((title, False, False, time))
                     thumb = info["thumbnail"]
                 await inter.edit_original_response(embed=await genEmbed([f"{title} has been Added to Queue", thumb, "Loading Video...", "Volume N/A"]))
@@ -495,7 +487,7 @@ class Player(View):
                 for song in bullet_list[offset:offset+L]:
                     embed.description += f"{song}\n"
                 n = Pagination.compute_total_pages(len(bullet_list), L)
-                timeString = f"{self.totalHours}h {self.totalMinutes}m {self.totalSeconds}s" if self.totalHours > 0 else f"{self.totalMinutes}m {self.totalSeconds}s"
+                timeString = await formatTime(self.totalSeconds)
                 embed.set_footer(text=f"Page {page} out of {n}. Runtime: {timeString}")
                 return embed, n
             await Pagination(inter, get_page).navigate()
@@ -576,6 +568,13 @@ async def genEmbed(data):
     embed.insert_field_at(2, name="Volume:", value=volume)
     return embed
 
+async def formatTime(seconds: str) -> str:
+    hours = seconds//3600
+    seconds-=(hours*3600)
+    minutes = seconds//60
+    seconds-=(minutes*60)
+    timeString = f"{str(int(hours))+':' if int(hours) > 0 else ''}{str(int(minutes))+':' if int(minutes) > 0 else '0:'}{'0'+str(int(seconds)) if int(seconds) < 10 else str(int(seconds))}"
+    return timeString
 
 @client.event
 async def on_ready():
