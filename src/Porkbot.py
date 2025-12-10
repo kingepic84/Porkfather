@@ -357,7 +357,8 @@ class Player(View):
         except IndexError:
             serverDict[self.interact.user.guild.id]['title_queue'].clear()
             self.first = True
-            await self.interact.message.edit(embed=await genEmbed(["Queue is Empty!", "https://cdn.discordapp.com/attachments/503080365787709442/1276994897341321419/Porkfather.png?ex=66cb8dac&is=66ca3c2c&hm=35e6d5d9dbca030104a25cac94292fa8ec35349f879a6728f270612b5810338a&", "No Video Loaded", "Volume N/A"]))
+            self.currEmbed = await genEmbed(["Queue is Empty!", "https://cdn.discordapp.com/attachments/503080365787709442/1276994897341321419/Porkfather.png?ex=66cb8dac&is=66ca3c2c&hm=35e6d5d9dbca030104a25cac94292fa8ec35349f879a6728f270612b5810338a&", "No Video Loaded", "Volume N/A"])
+            await self.interact.message.edit(embed=self.currEmbed)
 
     @button(emoji=u"\U0001F501", row=1, custom_id="loopQueue")
     async def loop(self, inter: Interaction, button: Button):
