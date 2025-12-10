@@ -230,6 +230,8 @@ class Player(View):
             await inter.edit_original_response(embed=await genEmbed(["Loading Video...", "https://cdn.discordapp.com/attachments/1141543952667906068/1276994311405178980/loading7_green.gif?ex=66cb8d21&is=66ca3ba1&hm=33cb6402ea6490830ffa7cbc76f51dfe7a86573ed43337540fd1f99a96bd2ea5&", "N/A", "Volume N/A"]), view=self)
             timedout = await linkModal.wait()
             if timedout:
+                if(len(self.queue) == 0):
+                    self.currEmbed = await genEmbed(["Queue is Empty!", "https://cdn.discordapp.com/attachments/503080365787709442/1276994897341321419/Porkfather.png?ex=66cb8dac&is=66ca3c2c&hm=35e6d5d9dbca030104a25cac94292fa8ec35349f879a6728f270612b5810338a&", "No Video Loaded", "Volume N/A"])
                 self.queueButton.disabled = False
                 await inter.edit_original_response(embed=self.currembed, view=self)
                 await inter.channel.send("You didnt put any URLs in time!", delete_after=5)
