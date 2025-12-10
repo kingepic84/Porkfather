@@ -482,7 +482,8 @@ class Player(View):
                 for song in bullet_list[offset:offset+L]:
                     embed.description += f"{song}\n"
                 n = Pagination.compute_total_pages(len(bullet_list), L)
-                timeString = await formatTime(self.totalSeconds)
+                time = self.totalSeconds - await getTime(self.vc.source.progress)
+                timeString = await formatTime(time)
                 embed.set_footer(text=f"Page {page} out of {n}. Runtime: {timeString}")
                 return embed, n
             await Pagination(inter, get_page).navigate()
