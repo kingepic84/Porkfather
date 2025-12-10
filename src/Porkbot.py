@@ -231,7 +231,7 @@ class Player(View):
             timedout = await linkModal.wait()
             if timedout:
                 if(len(self.queue) == 0):
-                    self.currEmbed = await genEmbed(["Queue is Empty!", "https://cdn.discordapp.com/attachments/503080365787709442/1276994897341321419/Porkfather.png?ex=66cb8dac&is=66ca3c2c&hm=35e6d5d9dbca030104a25cac94292fa8ec35349f879a6728f270612b5810338a&", "No Video Loaded", "Volume N/A"])
+                    self.currembed = await genEmbed(["Queue is Empty!", "https://cdn.discordapp.com/attachments/503080365787709442/1276994897341321419/Porkfather.png?ex=66cb8dac&is=66ca3c2c&hm=35e6d5d9dbca030104a25cac94292fa8ec35349f879a6728f270612b5810338a&", "No Video Loaded", "Volume N/A"])
                 self.queueButton.disabled = False
                 await inter.edit_original_response(embed=self.currembed, view=self)
                 await inter.channel.send("You didnt put any URLs in time!", delete_after=5)
@@ -359,8 +359,8 @@ class Player(View):
         except IndexError:
             serverDict[self.interact.user.guild.id]['title_queue'].clear()
             self.first = True
-            self.currEmbed = await genEmbed(["Queue is Empty!", "https://cdn.discordapp.com/attachments/503080365787709442/1276994897341321419/Porkfather.png?ex=66cb8dac&is=66ca3c2c&hm=35e6d5d9dbca030104a25cac94292fa8ec35349f879a6728f270612b5810338a&", "No Video Loaded", "Volume N/A"])
-            await self.interact.message.edit(embed=self.currEmbed, view=self)
+            self.currembed = await genEmbed(["Queue is Empty!", "https://cdn.discordapp.com/attachments/503080365787709442/1276994897341321419/Porkfather.png?ex=66cb8dac&is=66ca3c2c&hm=35e6d5d9dbca030104a25cac94292fa8ec35349f879a6728f270612b5810338a&", "No Video Loaded", "Volume N/A"])
+            await self.interact.message.edit(embed=self.currembed, view=self)
 
     @button(emoji=u"\U0001F501", row=1, custom_id="loopQueue")
     async def loop(self, inter: Interaction, button: Button):
@@ -436,8 +436,8 @@ class Player(View):
                 self.songHist.clear()
                 if self.vc.is_playing():
                     self.vc.stop()
-                    self.currEmbed = await genEmbed(["Queue is Empty!", "https://cdn.discordapp.com/attachments/503080365787709442/1276994897341321419/Porkfather.png?ex=66cb8dac&is=66ca3c2c&hm=35e6d5d9dbca030104a25cac94292fa8ec35349f879a6728f270612b5810338a&", "No Video Loaded", "Volume N/A"])
-                    await inter.message.edit(embed=self.currEmbed, view=self)
+                    self.currembed = await genEmbed(["Queue is Empty!", "https://cdn.discordapp.com/attachments/503080365787709442/1276994897341321419/Porkfather.png?ex=66cb8dac&is=66ca3c2c&hm=35e6d5d9dbca030104a25cac94292fa8ec35349f879a6728f270612b5810338a&", "No Video Loaded", "Volume N/A"])
+                    await inter.message.edit(embed=self.currembed, view=self)
                 if self.looping:
                     self.looping = False
                 if self.loopOne:
