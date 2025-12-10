@@ -434,7 +434,8 @@ class Player(View):
                 self.songHist.clear()
                 if self.vc.is_playing():
                     self.vc.stop()
-                    await inter.message.edit(embed=await genEmbed(["Queue is Empty!", "https://cdn.discordapp.com/attachments/503080365787709442/1276994897341321419/Porkfather.png?ex=66cb8dac&is=66ca3c2c&hm=35e6d5d9dbca030104a25cac94292fa8ec35349f879a6728f270612b5810338a&", "No Video Loaded", "Volume N/A"]))
+                    self.currEmbed = await genEmbed(["Queue is Empty!", "https://cdn.discordapp.com/attachments/503080365787709442/1276994897341321419/Porkfather.png?ex=66cb8dac&is=66ca3c2c&hm=35e6d5d9dbca030104a25cac94292fa8ec35349f879a6728f270612b5810338a&", "No Video Loaded", "Volume N/A"])
+                    await inter.message.edit(embed=self.currEmbed)
                 if self.looping:
                     self.looping = False
                 if self.loopOne:
