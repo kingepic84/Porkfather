@@ -471,20 +471,21 @@ class Player(View):
                 offset = (page-1) * L
                 bullet_list = sorted([f"**{serverDict[inter.user.guild.id]['title_queue'].index(title)+1}.** {title[0]}: {self.vc.source.progress} / {title[3]}" if serverDict[inter.user.guild.id]['title_queue'].index(title) == 0 and self.vc.source is not None else f"**{serverDict[inter.user.guild.id]['title_queue'].index(title)+1}.** {title[0]}: {title[3]}" for title in serverDict[inter.user.guild.id]['title_queue']], key=lambda x: int(x[2:x.index(".")]))
                 queue_name = f"Current Song Queue"
+                elapsed = await getTime(self.vc.source.progress)
+                time = self.totalSeconds - elapsed
                 if len(serverDict[inter.user.guild.id]['title_queue']) > 0 and serverDict[inter.user.guild.id]['title_queue'][0][1]:
                     bullet_list[0] = f"**Currently Looping:** {bullet_list[0][bullet_list[0].index('.**')+3:]}"
                 elif len(serverDict[inter.user.guild.id]['title_queue']) > 0 and serverDict[inter.user.guild.id]['title_queue'][0][2]:
                     queue_name = "***Currently Looping Entire Queue:***"
                 if len(bullet_list) == 0:
+                    time = 0
                     bullet_list = ["Song Queue is Empty!"]
+                timeString = await formatTime(time) if time > 0 else "N/A"
                 embedDict = {"color": int("4287f5", base=16), "title": queue_name, "description": ""}
                 embed = Embed.from_dict(embedDict)
                 for song in bullet_list[offset:offset+L]:
                     embed.description += f"{song}\n"
                 n = Pagination.compute_total_pages(len(bullet_list), L)
-                elapsed = await getTime(self.vc.source.progress)
-                time = self.totalSeconds - elapsed
-                timeString = await formatTime(time)
                 embed.set_footer(text=f"Page {page} out of {n}. Runtime: {timeString}")
                 return embed, n
             await Pagination(inter, get_page).navigate()
