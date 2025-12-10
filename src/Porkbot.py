@@ -204,8 +204,6 @@ class Player(View):
         self.first = True
         self.prev = False
         self.songHist = setList()
-        self.totalHours = 0
-        self.totalMinutes = 0
         self.totalSeconds = 0
 
 
@@ -247,12 +245,6 @@ class Player(View):
                     title = entry["title"]
                     time = entry["duration"]
                     if time is not None:
-                        # hours = time//3600
-                        # self.totalHours+=hours
-                        # time-=(hours*3600)
-                        # minutes = time//60
-                        # self.totalMinutes+=minutes
-                        # time-=(minutes*60)
                         self.totalSeconds+=time
                         timeString = await formatTime(time)
                     else: timeString = "N/A"
@@ -327,7 +319,8 @@ class Player(View):
                         serverDict[self.interact.user.guild.id]['title_queue'].append(popped)
                     else:
                         if not self.first:
-                            serverDict[self.interact.user.guild.id]['title_queue'].pop(0)
+                            ent = serverDict[self.interact.user.guild.id]['title_queue'].pop(0)
+                            self.totalSeconds -= await getTime(ent[3])
                         else:
                             self.first = False
                 except IndexError:
@@ -351,6 +344,7 @@ class Player(View):
                 serverDict[self.interact.user.guild.id]['title_queue'][1] = (serverDict[self.interact.user.guild.id]['title_queue'][1][0], False, False, serverDict[self.interact.user.guild.id]['title_queue'][1][3])
                 if self.vc.source is not None:
                     self.vc.source.cleanup()
+                self.totalSeconds+=await getTime(prevSong[1][3])
                 self.url = self.queue.pop(0)
                 await self.playNext(False)
             else:
@@ -502,6 +496,7 @@ class Player(View):
                 if inter.guild.voice_client is not None:
                     self.queue.clear()
                     serverDict[inter.user.guild.id]["title_queue"].clear()
+                    self.totalSeconds = 0
                     self.songHist.clear()
                     self.dead = True
                     button.emoji = "❤"
@@ -567,6 +562,17 @@ async def genEmbed(data):
     embed.insert_field_at(1, name="Duration:", value=data[2])
     embed.insert_field_at(2, name="Volume:", value=volume)
     return embed
+
+async def getTime(timeString: str) -> int:
+    timeParts = timeString.split(":")
+    if len(timeParts) == 3:
+        return int(timeParts[0])*3600 + int(timeParts[1])*60 + int(timeParts[2])
+    elif len(timeParts) == 2:
+        return int(timeParts[0])*60 + int(timeParts[1])
+    elif len(timeParts) == 1:
+        return int(timeParts[0])
+    else:
+        return 0
 
 async def formatTime(seconds: str) -> str:
     hours = seconds//3600
