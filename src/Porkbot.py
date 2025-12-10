@@ -268,6 +268,15 @@ class Player(View):
                     info = ydl.extract_info(linkModal.url, download=False)
                     title = info["title"]
                     time = info["duration_string"]
+                    timeNum = info["duration"]
+                    if timeNum is not None:
+                        hours = timeNum//3600
+                        self.totalHours+=hours
+                        timeNum-=(hours*3600)
+                        minutes = timeNum//60
+                        self.totalMinutes+=minutes
+                        timeNum-=(minutes*60)
+                        self.totalSeconds+=timeNum
                     serverDict[inter.user.guild.id]['title_queue'].append((title, False, False, time))
                     thumb = info["thumbnail"]
                 await inter.edit_original_response(embed=await genEmbed([f"{title} has been Added to Queue", thumb, "Loading Video...", "Volume N/A"]))
@@ -486,7 +495,8 @@ class Player(View):
                 for song in bullet_list[offset:offset+L]:
                     embed.description += f"{song}\n"
                 n = Pagination.compute_total_pages(len(bullet_list), L)
-                embed.set_footer(text=f"Page {page} out of {n}")
+                timeString = f"{self.totalHours}h {self.totalMinutes}m {self.totalSeconds}s" if self.totalHours > 0 else f"{self.totalMinutes}m {self.totalSeconds}s"
+                embed.set_footer(text=f"Page {page} out of {n}. Runtime: {timeString}")
                 return embed, n
             await Pagination(inter, get_page).navigate()
         else: 
