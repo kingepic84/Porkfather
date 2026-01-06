@@ -28,8 +28,8 @@ vc = None
 currEmbed = None
 serverDict: dict[int, dict[View, list]] = {}
 L = 15
-dogFile = File(f"../res/video/dog_go_boom.mp4", filename="dog.mp4")
-rock = File(f"../res/video/rock.mp4", filename="rock.mp4")
+dogFile = File("../res/video/dog_go_boom.mp4", filename="dog.mp4")
+rock = File("../res/video/rock.mp4", filename="rock.mp4")
 nukeFile = File("../res/img/nuke.gif", filename="nuke.gif")
 cactusFile = File("../res/video/PocketCactus.mp4", filename="cactus.mp4")
 enable = True
@@ -676,9 +676,9 @@ async def dog(inter: Interaction):
 
 
 @tree.command(name="warn", description="warn people (the funny)")
+@commands.has_permissions(administrator = True, moderate_members = True)
 async def warn(inter: Interaction, user: Member, message: str):
     if (inter.guild is not None and inter.guild.id == 727745299614793728) or enable:
-        if inter.user.top_role.id in [732721267115032747, 1267870834416947262, 1285065286890029160]:
             guild = client.get_guild(727745299614793728)
             channels = inter.guild.channels
             channelNames = [a.name for a in channels]
@@ -690,8 +690,8 @@ async def warn(inter: Interaction, user: Member, message: str):
             await inter.response.send_message(embed=Embed(color=int("42f54e", base=16), title=f"✅ *{user.display_name} has been warned*"))
             await asyncio.sleep(600)
             await channel.delete()
-        else:
-            await inter.response.send_message("YOU CANT USE THIS COMMAND!!! CRY ABOUT IT!!!!", ephemeral=True)
+        # else:
+        #     await inter.response.send_message("YOU CANT USE THIS COMMAND!!! CRY ABOUT IT!!!!", ephemeral=True)
     else:
         await inter.response.send_message(content="# YOU CANT USE THIS COMMAND IN THIS SERVER!\nhttps://tenor.com/view/wheeze-laugh-gif-14359545", delete_after=5)
 
