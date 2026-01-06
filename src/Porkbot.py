@@ -12,7 +12,7 @@ from discord import (Attachment, AudioSource, ButtonStyle, Embed,
                      FFmpegPCMAudio, File, Interaction, Member,
                      PCMVolumeTransformer, PermissionOverwrite, VoiceClient,
                      app_commands)
-from discord.ext import tasks
+from discord.ext import tasks, commands
 from discord.abc import GuildChannel as gc
 from discord.ui import Button, Modal, TextInput, View, button
 
