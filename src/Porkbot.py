@@ -12,7 +12,7 @@ from discord import (Attachment, AudioSource, ButtonStyle, Embed,
                      FFmpegPCMAudio, File, Interaction, Member,
                      PCMVolumeTransformer, PermissionOverwrite, VoiceClient,
                      app_commands)
-from discord.ext import tasks
+from discord.ext import tasks, commands
 from discord.abc import GuildChannel as gc
 from discord.ui import Button, Modal, TextInput, View, button
 
@@ -689,6 +689,7 @@ async def dog(inter: Interaction):
 
 
 @tree.command(name="warn", description="warn people (the funny)")
+@commands.has_permissions(administrator = True, moderate_members = True)
 async def warn(inter: Interaction, user: Member, message: str):
     if is_allowed_guild(inter):
         if inter.user.top_role.id in [732721267115032747, 1267870834416947262, 1285065286890029160]:
@@ -703,8 +704,8 @@ async def warn(inter: Interaction, user: Member, message: str):
             await inter.response.send_message(embed=Embed(color=0x42f54e, title=f"✅ *{user.display_name} has been warned*"))
             await asyncio.sleep(600)
             await channel.delete()
-        else:
-            await inter.response.send_message("YOU CANT USE THIS COMMAND!!! CRY ABOUT IT!!!!", ephemeral=True)
+        # else:
+        #     await inter.response.send_message("YOU CANT USE THIS COMMAND!!! CRY ABOUT IT!!!!", ephemeral=True)
     else:
         await inter.response.send_message(content="# YOU CANT USE THIS COMMAND IN THIS SERVER!\nhttps://tenor.com/view/wheeze-laugh-gif-14359545", delete_after=5)
 
