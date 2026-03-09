@@ -19,7 +19,8 @@ from discord.ui import Button, Modal, TextInput, View, button
 
 intents = discord.Intents.default()
 client = discord.Client(intents=intents.all())
-guild = client.get_guild(727745299614793728)
+GUILD_ID = 727745299614793728
+BOT_ID = 1272003396290740326
 tree = app_commands.CommandTree(client)
 loop = False
 loopOne = False
@@ -28,18 +29,26 @@ vc = None
 currEmbed = None
 serverDict: dict[int, dict[View, list]] = {}
 L = 15
-dogFile = File(f"../res/video/dog_go_boom.mp4", filename="dog.mp4")
-rock = File(f"../res/video/rock.mp4", filename="rock.mp4")
-nukeFile = File("../res/img/nuke.gif", filename="nuke.gif")
-cactusFile = File("../res/video/PocketCactus.mp4", filename="cactus.mp4")
 enable = True
 
-@tasks.loop(minutes=30)
+def is_allowed_guild(inter: Interaction, *extra_guild_ids: int) -> bool:
+    if enable:
+        return True
+    if inter.guild is None:
+        return False
+    return inter.guild.id == GUILD_ID or inter.guild.id in extra_guild_ids
+
+@tasks.loop(minutes=1)
 async def waitfordisconnect():
-    if len(client.voice_clients) > 0 and 503067386115653683 in serverDict:
-        vMembs = [member.id for member in serverDict[503067386115653683]["vidPlayer"].vc.channel.members]
-        if len(vMembs) == 1 and vMembs[0] == 941497960561246278:
-            await client.voice_clients[0].disconnect()
+    for vc in list(client.voice_clients):
+        members = [m.id for m in vc.channel.members]
+        if len(members) == 1 and members[0] == BOT_ID:
+            guild_id = vc.guild.id
+            if guild_id in serverDict:
+                serverDict[guild_id]["vidPlayer"].queue.clear()
+                serverDict[guild_id]["title_queue"].clear()
+                serverDict.pop(guild_id, None)
+            await vc.disconnect()
 
 class setList(list):
     def __init__(self): self.lst = []
@@ -50,6 +59,7 @@ class setList(list):
             return self.lst.append(object)
     def __len__(self) -> int: return len(self.lst)
     def pop(self, index: SupportsIndex = -1) -> tuple: return self.lst.pop(index)
+    def clear(self): self.lst.clear()
 
 
 class AudioSourceTracked(PCMVolumeTransformer):
@@ -239,7 +249,7 @@ class Player(View):
             elif "list=" in linkModal.url:
                 await inter.edit_original_response(embed=await genEmbed(["Playlist is being processed...", "https://cdn.discordapp.com/attachments/1141543952667906068/1276994311405178980/loading7_green.gif?ex=66cb8d21&is=66ca3ba1&hm=33cb6402ea6490830ffa7cbc76f51dfe7a86573ed43337540fd1f99a96bd2ea5&", "N/A", "Volume N/A"]))
                 with yt_dlp.YoutubeDL(self.ydl_playlist_opts) as ydl:
-                    listinfo = ydl.extract_info(linkModal.url, download=False)
+                    listinfo = await asyncio.to_thread(ydl.extract_info, linkModal.url, False)
                 for entry in listinfo["entries"]:
                     self.queue.append(entry["url"])
                     title = entry["title"]
@@ -257,7 +267,7 @@ class Player(View):
             else:
                 self.queue.append(linkModal.url)
                 with yt_dlp.YoutubeDL(self.ydl_opts) as ydl:
-                    info = ydl.extract_info(linkModal.url, download=False)
+                    info = await asyncio.to_thread(ydl.extract_info, linkModal.url, False)
                     title = info["title"]
                     time = info["duration_string"]
                     self.totalSeconds += info["duration"]
@@ -277,7 +287,7 @@ class Player(View):
         if not fromSkip:
             await self.interact.message.edit(embed=await genEmbed(["Grabbing Latest Video From Queue...", "https://cdn.discordapp.com/attachments/1141543952667906068/1276994311405178980/loading7_green.gif?ex=66cb8d21&is=66ca3ba1&hm=33cb6402ea6490830ffa7cbc76f51dfe7a86573ed43337540fd1f99a96bd2ea5&", "Loading Video...", "Volume N/A"]))
         with yt_dlp.YoutubeDL(self.ydl_opts) as ydl:
-            info = ydl.extract_info(self.url, download=False)
+            info = await asyncio.to_thread(ydl.extract_info, self.url, False)
             url2 = info['url']
             title = info["title"]
             thumbnail = info['thumbnail']
@@ -481,7 +491,7 @@ class Player(View):
                     time = 0
                     bullet_list = ["Song Queue is Empty!"]
                 timeString = await formatTime(time) if time > 0 else "N/A"
-                embedDict = {"color": int("4287f5", base=16), "title": queue_name, "description": ""}
+                embedDict = {"color": 0x4287f5, "title": queue_name, "description": ""}
                 embed = Embed.from_dict(embedDict)
                 for song in bullet_list[offset:offset+L]:
                     embed.description += f"{song}\n"
@@ -507,6 +517,7 @@ class Player(View):
                     button.label = "Live"
                     await inter.message.edit(view=self)
                     await inter.guild.voice_client.disconnect()
+                    serverDict.pop(inter.user.guild.id, None)
                     await inter.response.send_message("Died Successfully", delete_after=4)
                     await asyncio.sleep(4)
                 else:
@@ -550,7 +561,7 @@ class Player(View):
     
         
 async def genEmbed(data):
-    embed = {"color": int("4287f5", base=16), "title": "Media Player"}
+    embed = {"color": 0x4287f5, "title": "Media Player"}
     embed = Embed.from_dict(embed)
     if isinstance(data[1], str):
         embed.set_thumbnail(url=data[1])
@@ -578,7 +589,7 @@ async def getTime(timeString: str) -> int:
     else:
         return 0
 
-async def formatTime(seconds: str) -> str:
+async def formatTime(seconds: float) -> str:
     hours = seconds//3600
     seconds-=(hours*3600)
     minutes = seconds//60
@@ -588,7 +599,7 @@ async def formatTime(seconds: str) -> str:
 
 @client.event
 async def on_ready():
-    await tree.sync(guild=guild)
+    await tree.sync()
     await waitfordisconnect.start()
     print(f'Logged in as {client.user} (ID: {client.user.id})')
     print('------')
@@ -599,13 +610,13 @@ async def vplayer(inter: Interaction):
     await inter.response.send_message("Please wait while we set up the player...")
     if inter.user.voice is not None:
         vMembs = [member.id for member in inter.user.voice.channel.members]
-        if 1272003396290740326 not in vMembs:
+        if BOT_ID not in vMembs:
             vc = await inter.user.voice.channel.connect()
             embed = await genEmbed(["Nothing...", "https://cdn.discordapp.com/attachments/503080365787709442/1276994897341321419/Porkfather.png?ex=66cb8dac&is=66ca3c2c&hm=35e6d5d9dbca030104a25cac94292fa8ec35349f879a6728f270612b5810338a&","Duration N/A", "Volume N/A"])
             serverDict[inter.user.guild.id] = {"vidPlayer":Player(vc=vc, currEmbed=embed, timeout=21600), 'title_queue': [], "channel": inter.channel.id}
-            await inter.channel.purge(limit=10, check=lambda c: len(c.components) > 0 and c.author.id == 1272003396290740326)
+            await inter.channel.purge(limit=10, check=lambda c: len(c.components) > 0 and c.author.id == BOT_ID)
             await inter.edit_original_response(content="", embed=embed, view=serverDict[inter.user.guild.id]["vidPlayer"])
-        elif 1272003396290740326 in vMembs:
+        elif BOT_ID in vMembs:
             await inter.edit_original_response(content="I'm already in the VC!")
             await asyncio.sleep(3)
             await inter.delete_original_response()
@@ -648,7 +659,7 @@ async def resend(inter: Interaction):
 
 @tree.command(name="mycommand", description="Hi!")
 async def hello(interaction: Interaction):
-    if interaction.guild.id == 727745299614793728 or enable:
+    if is_allowed_guild(interaction):
         await interaction.response.send_message(content="Hello World!")
     else:
         await interaction.response.send_message(content="# YOU CANT USE THIS COMMAND IN THIS SERVER!\nhttps://tenor.com/view/wheeze-laugh-gif-14359545", delete_after=5)
@@ -656,7 +667,8 @@ async def hello(interaction: Interaction):
 
 @tree.command(name="nuke", description="Nukes the Server")
 async def nuke(inter: Interaction):
-    if (inter.guild is not None and inter.guild.id == 727745299614793728) or enable:
+    nukeFile = File("../res/img/nuke.gif", filename="nuke.gif")
+    if is_allowed_guild(inter):
         colors = "123456789abcdef"
         color = "".join(choices(colors, k=6))
         embedContent = {"color": int(color, base=16),"title": "BOOOOOOOOOOOOOOOOOOOOOOOOOOOM!!!!!"}
@@ -669,7 +681,8 @@ async def nuke(inter: Interaction):
 
 @tree.command(name="dog", description="Dog go boom")
 async def dog(inter: Interaction):
-    if (inter.guild is not None and inter.guild.id == 727745299614793728) or enable:
+    dogFile = File(f"../res/video/dog_go_boom.mp4", filename="dog.mp4")
+    if is_allowed_guild(inter):
         await inter.response.send_message(file=dogFile)
     else:
         await inter.response.send_message(content="# YOU CANT USE THIS COMMAND IN THIS SERVER!\nhttps://tenor.com/view/wheeze-laugh-gif-14359545", delete_after=5)
@@ -677,17 +690,17 @@ async def dog(inter: Interaction):
 
 @tree.command(name="warn", description="warn people (the funny)")
 async def warn(inter: Interaction, user: Member, message: str):
-    if (inter.guild is not None and inter.guild.id == 727745299614793728) or enable:
+    if is_allowed_guild(inter):
         if inter.user.top_role.id in [732721267115032747, 1267870834416947262, 1285065286890029160]:
-            guild = client.get_guild(727745299614793728)
+            warn_guild = client.get_guild(GUILD_ID)
             channels = inter.guild.channels
             channelNames = [a.name for a in channels]
             if f"{user.display_name.lower()}-warning-channel" in channelNames:
                 channel = channels[channelNames.index(f"{user.display_name.lower()}-warning-channel")]
             else:
-                channel = await inter.guild.create_text_channel(f"{user.display_name} WARNING CHANNEL", overwrites={guild.default_role: PermissionOverwrite(view_channel=False), user: PermissionOverwrite(view_channel=True, send_messages=False)})
+                channel = await inter.guild.create_text_channel(f"{user.display_name} WARNING CHANNEL", overwrites={warn_guild.default_role: PermissionOverwrite(view_channel=False), user: PermissionOverwrite(view_channel=True, send_messages=False)})
             await channel.send(f"{user.mention}, you have been warned because of: {message}")
-            await inter.response.send_message(embed=Embed(color=int("42f54e", base=16), title=f"✅ *{user.display_name} has been warned*"))
+            await inter.response.send_message(embed=Embed(color=0x42f54e, title=f"✅ *{user.display_name} has been warned*"))
             await asyncio.sleep(600)
             await channel.delete()
         else:
@@ -698,9 +711,13 @@ async def warn(inter: Interaction, user: Member, message: str):
 
 @tree.command(name="kicks", description="Pumped Up fr fr")
 async def kicks(inter: Interaction):
-    if (inter.guild is not None and inter.guild.id == 727745299614793728) or enable:
+    if is_allowed_guild(inter):
+        if inter.user.voice is None:
+            await inter.response.send_message("You're not in a VC!", delete_after=5)
+            return
         if inter.guild.voice_client is not None:
             await inter.response.send_message("I'm already in a VC!", delete_after=5)
+            return
         channel = await inter.user.voice.channel.connect()
         coro = disconnect(channel)
         channel.play(FFmpegPCMAudio("../res/audio/ALDIODER KIDS.mp3"), after=lambda e: asyncio.run_coroutine_threadsafe(coro, client.loop))
@@ -711,9 +728,13 @@ async def kicks(inter: Interaction):
 
 @tree.command(name="gedagedigedagedo", description="Funny Chicken Nugget")
 async def nugget(inter: Interaction):
-    if (inter.guild is not None and inter.guild.id == 727745299614793728 or inter.guild.id == 1079211357674680450) or enable:
+    if is_allowed_guild(inter, 1079211357674680450):
+        if inter.user.voice is None:
+            await inter.response.send_message("You're not in a VC!", delete_after=5)
+            return
         if inter.guild.voice_client is not None:
             await inter.response.send_message("I'm already in a VC!", delete_after=5)
+            return
         channel = await inter.user.voice.channel.connect()
         coro = disconnect(channel)
         channel.play(FFmpegPCMAudio("../res/audio/gedagedigedagedago.mp3"), after=lambda e: asyncio.run_coroutine_threadsafe(coro, client.loop))
@@ -723,9 +744,13 @@ async def nugget(inter: Interaction):
 
 @tree.command(name="gedagedigedagedo_anime", description="Funny Chicken Nugget but Blue Archive Flavored")
 async def blueArchive(inter: Interaction):
-    if (inter.guild is not None and inter.guild.id == 727745299614793728 or inter.guild.id == 1079211357674680450) or enable:
+    if is_allowed_guild(inter, 1079211357674680450):
+        if inter.user.voice is None:
+            await inter.response.send_message("You're not in a VC!", delete_after=5)
+            return
         if inter.guild.voice_client is not None:
             await inter.response.send_message("I'm already in a VC!", delete_after=5)
+            return
         channel = await inter.user.voice.channel.connect()
         coro = disconnect(channel)
         channel.play(FFmpegPCMAudio("../res/video/Gedagedigedagedo.mp4"), after=lambda e: asyncio.run_coroutine_threadsafe(coro, client.loop))
@@ -736,14 +761,16 @@ async def blueArchive(inter: Interaction):
 
 @tree.command(name="rock", description="Throws a Rock")
 async def throw(inter: Interaction):
-    if (inter.guild is not None and inter.guild.id == 727745299614793728) or enable:
+    rock = File(f"../res/video/rock.mp4", filename="rock.mp4")
+    if is_allowed_guild(inter):
         await inter.response.send_message(file=rock)
     else:
         await inter.response.send_message(content="# YOU CANT USE THIS COMMAND IN THIS SERVER!\nhttps://tenor.com/view/wheeze-laugh-gif-14359545", delete_after=5)
     
 @tree.command(name="cactus", description="Pocket Cactus!")
 async def cactus(inter: Interaction):
-    if (inter.guild is not None and inter.guild.id == 727745299614793728) or enable:
+    cactusFile = File("../res/video/PocketCactus.mp4", filename="cactus.mp4")
+    if is_allowed_guild(inter):
         await inter.response.send_message(file=cactusFile)
     else:
         await inter.response.send_message(content="# YOU CANT USE THIS COMMAND IN THIS SERVER!\nhttps://tenor.com/view/wheeze-laugh-gif-14359545", delete_after=5)
@@ -751,27 +778,33 @@ async def cactus(inter: Interaction):
 
 @tree.command(name="play_file", description="Play music from a file")
 async def playFile(inter: Interaction, file: Attachment):
-    # if inter.guild.id == 727745299614793728:
-        if inter.guild.voice_client is not None:
-            await inter.response.send_message("You cant use this command when I'm already in a VC!", delete_after=5)
-        else:
-            if file.filename[file.filename.rindex("."):] in [".mp4", ".mp3", ".wav", ".ogg", ".mov"]:
-                channel = await inter.user.voice.channel.connect()
-                coro = disconnect(channel, inter)
-                url = file.url
-                source = FFmpegPCMAudio(url, **FFMPEG_OPTIONS)
-                embedDict = {"color":int("03ecfc", base=16), "title": "Now Playing:", "description": f"{file.filename[:file.filename.rindex('.')].replace('_', ' ')}"}
-                embed = Embed.from_dict(embedDict)
-                embed.set_thumbnail(url="https://cdn.discordapp.com/attachments/503080365787709442/1276994897341321419/Porkfather.png?ex=66cb8dac&is=66ca3c2c&hm=35e6d5d9dbca030104a25cac94292fa8ec35349f879a6728f270612b5810338a&")
-                await inter.response.send_message(embed=embed)
-                channel.play(source, after=lambda e: asyncio.run_coroutine_threadsafe(coro, client.loop))
-            else:
-                await inter.response.send_message(f"Invalid File!", delete_after=5)
-    # else:
-    #     await inter.response.send_message(content="# YOU CANT USE THIS COMMAND IN THIS SERVER!\nhttps://tenor.com/view/wheeze-laugh-gif-14359545", delete_after=5)
+    if inter.user.voice is None:
+        await inter.response.send_message("You're not in a VC!", delete_after=5)
+        return
+    if inter.guild.voice_client is not None:
+        await inter.response.send_message("You cant use this command when I'm already in a VC!", delete_after=5)
+        return
+    if file.filename[file.filename.rindex("."):] in [".mp4", ".mp3", ".wav", ".ogg", ".mov"]:
+        channel = await inter.user.voice.channel.connect()
+        coro = disconnect(channel, inter)
+        url = file.url
+        source = FFmpegPCMAudio(url, **FFMPEG_OPTIONS)
+        embedDict = {"color": 0x03ecfc, "title": "Now Playing:", "description": f"{file.filename[:file.filename.rindex('.')].replace('_', ' ')}"}
+        embed = Embed.from_dict(embedDict)
+        embed.set_thumbnail(url="https://cdn.discordapp.com/attachments/503080365787709442/1276994897341321419/Porkfather.png?ex=66cb8dac&is=66ca3c2c&hm=35e6d5d9dbca030104a25cac94292fa8ec35349f879a6728f270612b5810338a&")
+        await inter.response.send_message(embed=embed)
+        channel.play(source, after=lambda e: asyncio.run_coroutine_threadsafe(coro, client.loop))
+    else:
+        await inter.response.send_message(f"Invalid File!", delete_after=5)
 
 @tree.command(name="minesweeper", description="A simple game of minesweeper")
 async def minesweeper(inter: Interaction, rows: int = 9, columns: int = 9, bombs: int = 10):
+    if not (1 <= rows <= 9 and 1 <= columns <= 9):
+        await inter.response.send_message("Rows and columns must be between 1 and 9!", delete_after=5)
+        return
+    if bombs < 1 or bombs > rows * columns // 2:
+        await inter.response.send_message(f"Bombs must be between 1 and {rows * columns // 2}!", delete_after=5)
+        return
     board = [[0 for _ in range(columns)] for _ in range(rows)]
     candidates = {(r, c) for r in range(rows) for c in range(columns)}
     bomb_positions = []
@@ -832,7 +865,7 @@ async def minesweeper(inter: Interaction, rows: int = 9, columns: int = 9, bombs
 
 @tree.command(name="thanos", description="Perfectly Balanced. As all things should be")
 async def thanos(inter: Interaction):
-    if (inter.guild is not None and inter.guild.id == 727745299614793728) or enable:
+    if is_allowed_guild(inter):
         if inter.user.id == 727609947470299257:
             membs = list(inter.guild.members)
             shuffle(membs)
@@ -866,7 +899,7 @@ async def thanos(inter: Interaction):
 
 @tree.command(name="bible", description="The Bald Bible")
 async def bible(inter: Interaction):
-    if (inter.guild is not None and inter.guild.id == 727745299614793728) or enable:
+    if is_allowed_guild(inter):
         await inter.response.send_message(content="https://tenor.com/view/tf2-bald-engineer-bec-2fort-gif-22082556")
     else:
         await inter.response.send_message(content="# YOU CANT USE THIS COMMAND IN THIS SERVER!\nhttps://tenor.com/view/wheeze-laugh-gif-14359545", delete_after=5)
