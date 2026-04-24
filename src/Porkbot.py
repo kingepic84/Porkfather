@@ -1,8 +1,7 @@
 import asyncio
 import audioop
-import json
-import os
 import re
+
 from random import choices, shuffle, choice
 from typing import Callable, Optional, SupportsIndex
 
@@ -867,7 +866,7 @@ async def minesweeper(inter: Interaction, rows: int = 9, columns: int = 9, bombs
 @tree.command(name="thanos", description="Perfectly Balanced. As all things should be")
 async def thanos(inter: Interaction):
     if is_allowed_guild(inter):
-        if inter.user.id == 727609947470299257:
+        if inter.user.id == 727609947470299257 and inter.guild_id != 503067386115653683:
             membs = list(inter.guild.members)
             shuffle(membs)
             membs = [item for item in membs if item.id != 727609947470299257 and item.id != 310953543395966977 and item.id != 168058822114541570 and item.id != 812049779528826910]
@@ -896,7 +895,11 @@ async def thanos(inter: Interaction):
     else:
         await inter.response.send_message(content="# YOU CANT USE THIS COMMAND IN THIS SERVER!\nhttps://tenor.com/view/wheeze-laugh-gif-14359545", delete_after=5)
     
-
+@tree.command(name="flip", description="Flip a coin")
+async def flipcoin(inter: Interaction):
+    flips = ["Heads", "Tails"]
+    inter.response.send_message(choice(flips))
+    
 
 @tree.command(name="bible", description="The Bald Bible")
 async def bible(inter: Interaction):
